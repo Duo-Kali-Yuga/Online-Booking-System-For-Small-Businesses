@@ -6,3 +6,9 @@ export const getDashboard = async (req, res) => {
 
   return successResponse(res, data, "Dashboard data");
 };
+
+export const getClientDashboard = async (req, res) => {
+  const data = await clientService.getClientDashboard(req.user._id);
+
+  return successResponse(res, data, "Client dashboard");
+};

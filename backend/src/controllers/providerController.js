@@ -1,6 +1,7 @@
 import * as providerService from "../services/providerService.js";
 import { getPagination } from "../utils/pagination.js";
 import { successResponse } from "../utils/response.js";
+import { getCache, setCache } from "../utils/cache.js";
 
 export const createProvider = async (req, res) => {
   try {
@@ -28,20 +29,39 @@ export const getMyProvider = async (req, res) => {
   }
 };
 
+// export const getProviders = async (req, res) => {
+//   const pagination = getPagination(req);
+
+//   const { providers, total } = await providerService.getProviders(
+//     req.query,
+//     pagination
+//   );
+
+//   return successResponse(res, {
+//     data: providers,
+//     pagination: {
+//       total,
+//       page: pagination.page,
+//       pages: Math.ceil(total / pagination.limit),
+//     },
+//   });
+// };
+
+
+
 export const getProviders = async (req, res) => {
+  const cacheKey = JSON.stringify(req.query);
+
+  const cached = getCache(cacheKey);
+  if (cached) {
+    return successResponse(res, cached, "Cached providers");
+  }
+
   const pagination = getPagination(req);
 
-  const { providers, total } = await providerService.getProviders(
-    req.query,
-    pagination
-  );
+  const data = await providerService.getProviders(req.query, pagination);
 
-  return successResponse(res, {
-    data: providers,
-    pagination: {
-      total,
-      page: pagination.page,
-      pages: Math.ceil(total / pagination.limit),
-    },
-  });
+  setCache(cacheKey, data, 60);
+
+  return successResponse(res, data, "Providers fetched");
 };
