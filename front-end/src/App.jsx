@@ -27,37 +27,53 @@ function App() {
         <Route path="/app" element={<Home />} />
 
         <Route path="/provider">
-          <Route index element={<ProviderDashboard />} />
-          <Route path="services" element={<ProviderServices />} />
-          <Route path="bookings" element={<ProviderBookings />} />
-          <Route path="availability" element={<ProviderAvailability />} />
+          <Route index element={
+            <ProtectedRoute role="provider">
+              <ProviderDashboard />
+            </ProtectedRoute>
+          }/>
+          <Route path="services" element={
+            <ProtectedRoute role="provider">
+              <ProviderServices />
+            </ProtectedRoute>
+          }/>
+          <Route path="bookings" element={
+            <ProtectedRoute role="provider">
+              <ProviderBookings />
+            </ProtectedRoute>
+          }/>
+          <Route path="availability" element={
+            <ProtectedRoute role="provider">
+              <ProviderAvailability />
+            </ProtectedRoute>
+          }/>
         </Route>
 
         <Route path="/admin">
           <Route index element={
-            <ProtectedRoute role="ADMIN">
+            <ProtectedRoute role="admin">
               <AdminDashboard />
             </ProtectedRoute>
           }/>
           <Route path="users" element={
-            <ProtectedRoute role="ADMIN">
+            <ProtectedRoute role="admin">
               <AdminUsers />
             </ProtectedRoute>
           }/>
           <Route path="providers" element={
-            <ProtectedRoute role="ADMIN">
+            <ProtectedRoute role="admin">
               <AdminProviders />
             </ProtectedRoute>
           }/>
           <Route path="appointments" element={
-            <ProtectedRoute role="ADMIN">
+            <ProtectedRoute role="admin">
               <AdminAppointments />
             </ProtectedRoute>
           }/>
           <Route
             path="dashboard"
             element={
-              <ProtectedRoute role="ADMIN">
+              <ProtectedRoute role="admin">
                 <Dashboard />
               </ProtectedRoute>
             }

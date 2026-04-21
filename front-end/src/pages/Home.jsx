@@ -11,6 +11,10 @@ export default function Home() {
     queryFn: () => getProviders({ search }),
   });
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value)
+  }
+
   if (isLoading) return <p className="p-6">Loading providers...</p>;
   if (error) return <p className="p-6">{error.message}</p>;
 
@@ -23,12 +27,12 @@ export default function Home() {
       <input
         placeholder="Search doctors, barbers..."
         className="border p-2 w-full mb-6"
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={handleSearch}
       />
 
       {/* PROVIDERS */}
       <div className="grid grid-cols-3 gap-4">
-        {data.providers.map((p) => (
+        {data.data.providers.map((p) => (
           <Link
             key={p._id}
             to={`/booking/${p._id}`}

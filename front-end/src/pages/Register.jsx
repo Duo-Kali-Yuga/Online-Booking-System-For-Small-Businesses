@@ -9,7 +9,7 @@ export default function Register() {
     name: "",
     email: "",
     password: "",
-    role: "CLIENT",
+    role: "client",
   });
 
   const handleChange = (e) => {
@@ -67,9 +67,9 @@ export default function Register() {
         className="border p-2 w-full mb-4"
         onChange={handleChange}
       >
-        <option value="CLIENT">Client</option>
-        <option value="PROVIDER">Provider</option>
-        <option value="ADMIN">Admin</option>
+        <option value="client">Client</option>
+        <option value="provider">Provider</option>
+        <option value="admin">Admin</option>
       </select>
 
       {/* BUTTON */}
