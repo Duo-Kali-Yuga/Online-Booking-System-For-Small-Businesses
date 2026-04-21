@@ -1,4 +1,6 @@
 import * as providerService from "../services/providerService.js";
+import { getPagination } from "../utils/pagination.js";
+import { successResponse } from "../utils/response.js";
 
 export const createProvider = async (req, res) => {
   try {
@@ -24,4 +26,22 @@ export const getMyProvider = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+export const getProviders = async (req, res) => {
+  const pagination = getPagination(req);
+
+  const { providers, total } = await providerService.getProviders(
+    req.query,
+    pagination
+  );
+
+  return successResponse(res, {
+    data: providers,
+    pagination: {
+      total,
+      page: pagination.page,
+      pages: Math.ceil(total / pagination.limit),
+    },
+  });
 };

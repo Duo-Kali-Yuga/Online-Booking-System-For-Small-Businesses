@@ -28,4 +28,9 @@ const providerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+providerSchema.index({
+  businessName: "text",
+  industry: "text",
+});
+
 export default mongoose.model("Provider", providerSchema);
