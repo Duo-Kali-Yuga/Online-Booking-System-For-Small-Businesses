@@ -8,6 +8,7 @@ import availabilityRoutes from "./routes/availabilityRoutes.js";
 import slotRoutes from "./routes/slotRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
+import { logger } from "./middlewares/logger.js";
 
 
 
@@ -17,6 +18,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(errorHandler);
+app.use(logger);
+
 
 // API
 app.use("/api/auth", authRoutes);
@@ -25,6 +28,7 @@ app.use("/api/providers", providerRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/slots", slotRoutes);
 app.use("/api/appointments", appointmentRoutes);
+
 
 
 
