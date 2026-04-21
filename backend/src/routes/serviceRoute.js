@@ -5,10 +5,13 @@ import {
   deleteService,
 } from "../controllers/serviceController.js";
 import { protect, isAdmin } from "../middlewares/authMiddleware.js";
+import { serviceSchema } from "../validators/serviceValidator.js";
+
+
 
 const router = express.Router();
 
-router.post("/", protect, isAdmin, createService);
+router.post("/", protect, isAdmin, validate(serviceSchema), createService);
 router.get("/:providerId", getMyServices);
 router.delete("/:id", protect, isAdmin, deleteService);
 

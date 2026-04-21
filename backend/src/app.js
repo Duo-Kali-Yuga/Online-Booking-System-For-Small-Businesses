@@ -7,12 +7,16 @@ import providerRoutes from "./routes/providerRoutes.js";
 import availabilityRoutes from "./routes/availabilityRoutes.js";
 import slotRoutes from "./routes/slotRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import { errorHandler } from "./middlewares/errorMiddleware.js";
+
+
 
 const app = express();
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(errorHandler);
 
 // API
 app.use("/api/auth", authRoutes);
