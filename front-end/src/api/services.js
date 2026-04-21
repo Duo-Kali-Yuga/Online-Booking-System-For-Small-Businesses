@@ -41,3 +41,29 @@ export const rescheduleAppointment = (id, data) =>
     method: "PATCH",
     body: JSON.stringify(data),
   });
+
+
+// Reviews
+
+export const getReviews = (providerId) =>
+  fetcher(`/reviews/${providerId}`);
+
+export const createReview = (data) =>
+  fetcher("/reviews", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+// Admin
+
+export const getUsers = () => fetcher("/admin/users");
+
+export const getProvidersAdmin = () => fetcher("/admin/providers");
+
+export const toggleProvider = (id) =>
+  fetcher(`/admin/providers/${id}/toggle`, {
+    method: "PATCH",
+  });
+
+export const getAppointmentsAdmin = () =>
+  fetcher("/admin/appointments");

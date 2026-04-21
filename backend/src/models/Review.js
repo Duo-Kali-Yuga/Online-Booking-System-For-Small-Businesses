@@ -14,11 +14,17 @@ const reviewSchema = new mongoose.Schema(
     },
     rating: {
       type: Number,
+      required: true,
       min: 1,
       max: 5,
-      required: true,
     },
-    comment: String,
+    comment: {
+      type: String,
+    },
+    appointment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Appointment",
+    },
   },
   { timestamps: true }
 );

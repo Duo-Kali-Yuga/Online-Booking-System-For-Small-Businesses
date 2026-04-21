@@ -11,11 +11,14 @@ import {
   getServices,
   getSlots,
   bookAppointment,
+  getReviews,
 } from "../api/services";
 
 
-
 export default function Booking() {
+
+  const [success, setSuccess] = useState(false);
+
   const { providerId } = useParams();
 
   const queryClient = useQueryClient();
@@ -63,14 +66,11 @@ export default function Booking() {
   const bookingMutation = useMutation({
     mutationFn: bookAppointment,
     onSuccess: () => {
-      alert("✅ Appointment booked!");
+      setSuccess(true);
 
-      // refresh slots after booking
-      queryClient.invalidateQueries({
-        queryKey: ["slots", providerId],
-      });
+      setTimeout(() => setSuccess(false), 2000);
 
-      // reset selection
+      queryClient.invalidateQueries({ queryKey: ["slots", providerId] });
       setSelectedSlot(null);
     },
     onError: (error) => {
@@ -91,6 +91,14 @@ export default function Booking() {
     });
   };
 
+
+  // Reviews
+
+  const { data: reviews } = useQuery({
+    queryKey: ["reviews", providerId],
+    queryFn: () => getReviews(providerId),
+  });
+
   // -------------------------
   // UI
   // -------------------------
@@ -104,16 +112,24 @@ export default function Booking() {
       <div className="mb-6">
         <h2 className="font-semibold mb-2">Select Service</h2>
 
-        {servicesLoading && <p>Loading services...</p>}
+        {servicesLoading && (
+          <div className="flex gap-2">
+            {[1,2,3].map((i) => (
+              <div key={i} className="w-24 h-10 bg-gray-200 animate-pulse rounded" />
+            ))}
+          </div>
+        )}
         {servicesError && <p>Error loading services</p>}
 
         <div className="flex flex-wrap gap-2">
           {services?.map((s) => (
-            <button
+            <motion.button
               key={s._id}
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05 }}
               onClick={() => {
                 setSelectedService(s);
-                setSelectedSlot(null); // reset slot
+                setSelectedSlot(null);
               }}
               className={`px-4 py-2 border rounded ${
                 selectedService?._id === s._id
@@ -122,7 +138,7 @@ export default function Booking() {
               }`}
             >
               {s.name} ({s.duration}m)
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -154,22 +170,33 @@ export default function Booking() {
           <p className="text-gray-500">Select a service first</p>
         )}
 
-        {slotsLoading && <p>Loading slots...</p>}
+        {slotsLoading && (
+          <div className="grid grid-cols-4 gap-2">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="h-10 bg-gray-200 animate-pulse rounded"
+              />
+            ))}
+          </div>
+        )}
         {slotsError && <p>Error loading slots</p>}
 
         <div className="grid grid-cols-4 gap-2">
           {slots?.map((slot, i) => (
-            <button
+            <motion.button
               key={i}
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }}
               onClick={() => setSelectedSlot(slot.start)}
-              className={`border p-2 rounded ${
+              className={`border p-2 rounded transition ${
                 selectedSlot === slot.start
                   ? "bg-blue-500 text-white"
-                  : ""
+                  : "hover:bg-gray-100"
               }`}
             >
               {slot.start}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -179,11 +206,31 @@ export default function Booking() {
       {/* -------------------- */}
       <button
         onClick={handleBooking}
-        disabled={bookingMutation.isLoading ||!selectedService ||!selectedSlot}
+        disabled={!selectedService || !selectedSlot || bookingMutation.isLoading}
         className="bg-black text-white px-6 py-2 rounded disabled:opacity-50"
       >
         {bookingMutation.isLoading ? "Booking..." : "Confirm Booking"}
       </button>
+      {success && (
+        <div className="bg-green-100 text-green-700 p-2 mb-4 rounded">
+          ✅ Appointment booked successfully!
+        </div>
+      )}
+
+      {/* -------------------- */}
+      {/* review Part */}
+      {/* -------------------- */}
+      <div className="mt-8">
+        <h2 className="font-semibold mb-2">Reviews</h2>
+
+        {reviews?.map((r) => (
+          <div key={r._id} className="border p-3 rounded mb-2">
+            <p className="font-semibold">{r.client.name}</p>
+            <p>⭐ {r.rating}</p>
+            <p className="text-sm text-gray-600">{r.comment}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

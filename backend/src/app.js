@@ -9,6 +9,8 @@ import slotRoutes from "./routes/slotRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
 import { logger } from "./middlewares/logger.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 
 
@@ -29,8 +31,8 @@ app.use("/api/providers", providerRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/slots", slotRoutes);
 app.use("/api/appointments", appointmentRoutes);
-
-
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 app.get("/", (req, res) => {

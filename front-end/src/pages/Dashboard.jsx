@@ -3,8 +3,17 @@ import { fetcher } from "../api/fetcher";
 import { cancelAppointment, rescheduleAppointment } from "../api/services";
 import dayjs from "dayjs";
 import { useState } from "react";
+import {
+  createReview,
+} from "../api/services";
+
 
 export default function Dashboard() {
+
+  const [reviewData, setReviewData] = useState(null);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+
   const queryClient = useQueryClient();
 
   const [rescheduleData, setRescheduleData] = useState(null);
@@ -30,6 +39,13 @@ export default function Dashboard() {
     },
   });
 
+  const reviewMutation = useMutation({
+    mutationFn: createReview,
+    onSuccess: () => {
+      setReviewData(null);
+    },
+  });
+
   if (isLoading) return <p className="p-6">Loading...</p>;
   if (error) return <p className="p-6">{error.message}</p>;
 
@@ -44,6 +60,8 @@ export default function Dashboard() {
   const past = appointments.filter((a) =>
     dayjs(`${a.date} ${a.startTime}`).isBefore(now)
   );
+
+
 
   const AppointmentCard = ({ appt, isPast }) => (
     <div className="border p-4 rounded flex justify-between items-center">
@@ -84,6 +102,17 @@ export default function Dashboard() {
             className="bg-blue-500 text-white px-3 py-1 text-sm rounded"
           >
             Reschedule
+          </button>
+        )}
+
+        {/* Review */}
+
+        {isPast && appt.status === "completed" && (
+          <button
+            onClick={() => setReviewData(appt)}
+            className="bg-yellow-500 text-white px-2 py-1"
+          >
+            Leave Review
           </button>
         )}
 
@@ -160,6 +189,55 @@ export default function Dashboard() {
             <button
               onClick={() => setRescheduleData(null)}
               className="mt-2 text-sm text-gray-500"
+            >
+              Cancel
+            </button>
+
+          </div>
+        </div>
+      )}
+
+      {reviewData && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+
+          <div className="bg-white p-6 rounded w-96">
+
+            <h2 className="font-bold mb-4">Leave Review</h2>
+
+            {/* Rating */}
+            <select
+              className="border p-2 w-full mb-2"
+              onChange={(e) => setRating(e.target.value)}
+            >
+              {[1,2,3,4,5].map((r) => (
+                <option key={r} value={r}>{r} ⭐</option>
+              ))}
+            </select>
+
+            {/* Comment */}
+            <textarea
+              className="border p-2 w-full mb-4"
+              placeholder="Your experience..."
+              onChange={(e) => setComment(e.target.value)}
+            />
+
+            <button
+              onClick={() =>
+                reviewMutation.mutate({
+                  providerId: reviewData.provider,
+                  appointmentId: reviewData._id,
+                  rating,
+                  comment,
+                })
+              }
+              className="bg-black text-white w-full py-2"
+            >
+              Submit
+            </button>
+
+            <button
+              onClick={() => setReviewData(null)}
+              className="mt-2 text-sm"
             >
               Cancel
             </button>
