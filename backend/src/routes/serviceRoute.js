@@ -6,7 +6,8 @@ import {
 } from "../controllers/serviceController.js";
 import { protect, isAdmin } from "../middlewares/authMiddleware.js";
 import { serviceSchema } from "../validators/serviceValidator.js";
-
+import { validate } from "../middlewares/validate.js";
+import { serviceSchema } from "../validators/serviceValidator.js";
 
 
 const router = express.Router();

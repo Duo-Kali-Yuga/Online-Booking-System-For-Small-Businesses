@@ -1,5 +1,4 @@
 import Provider from "../models/Provider.js";
-import Provider from "../models/Provider.js";
 
 export const createProviderProfile = async (userId, data) => {
   

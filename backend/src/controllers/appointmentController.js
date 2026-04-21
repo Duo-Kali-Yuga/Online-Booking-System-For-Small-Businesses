@@ -1,4 +1,4 @@
-import * as appointmentService from "../services/appointmentService.js";
+import * as appointmentService from "../services/appointmentServices.js";
 import { successResponse } from "../utils/response.js";
 
 // export const bookAppointment = async (req, res) => {
