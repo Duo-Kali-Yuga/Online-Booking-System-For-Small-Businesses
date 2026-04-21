@@ -3,6 +3,10 @@ import Appointment from "../models/Appointment.js";
 import Service from "../models/Service.js";
 import Provider from "../models/Provider.js";
 import { getAvailableSlots } from "./slotService.js";
+import { sendEmail } from "../utils/email.js";
+import User from "../models/User.js";
+
+
 
 export const createAppointment = async (
   userId,
@@ -50,6 +54,14 @@ export const createAppointment = async (
       ],
       { session }
     );
+
+    const client = await User.findById(userId);
+
+    await sendEmail({
+      to: client.email,
+      subject: "Appointment Confirmed",
+      text: `Your appointment is confirmed for ${date} at ${startTime}`,
+    });
 
     await session.commitTransaction();
     session.endSession();
