@@ -12,7 +12,10 @@ export default function Login() {
       const data = await loginUser({ email, password });
 
       localStorage.setItem("token", data.token);
-      navigate("/");
+      navigate("/app");
+      // if (role === "CLIENT") → /app
+      // if (role === "PROVIDER") → /provider-dashboard
+      // if (role === "ADMIN") → /admin
     } catch (err) {
       alert(err.message);
     }

@@ -1,9 +1,7 @@
-const BASE_URL = "http://localhost:5000/api";
-
 export const fetcher = async (url, options = {}) => {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(`${BASE_URL}${url}`, {
+  const res = await fetch(`http://localhost:5000/api${url}`, {
     headers: {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
@@ -11,11 +9,16 @@ export const fetcher = async (url, options = {}) => {
     ...options,
   });
 
-  const data = await res.json();
+  let data;
 
-  // 🔥 Handle API format
+  try {
+    data = await res.json();
+  } catch (err) {
+    throw new Error(`Invalid JSON response (${res.status})`, err);
+  }
+
   if (!res.ok || data.success === false) {
-    throw new Error(data.message || "Something went wrong");
+    throw new Error(data.message || `Request failed (${res.status})`);
   }
 
   return data.data;

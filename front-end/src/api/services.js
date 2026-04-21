@@ -9,8 +9,10 @@ export const loginUser = (data) =>
 // Providers
 export const getProviders = (params = {}) => {
   const query = new URLSearchParams(params).toString();
-  return fetcher(`/providers?${query}`);
+  const url = query ? `/providers?${query}` : `/providers`;
+  return fetcher(url);
 };
+
 
 // Services
 export const getServices = (providerId) =>
