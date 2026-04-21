@@ -11,7 +11,10 @@ export default function Login() {
     try {
       const data = await loginUser({ email, password });
 
-      localStorage.setItem("token", data.token);
+      // localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.data.token);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+      
       navigate("/app");
       // if (role === "CLIENT") → /app
       // if (role === "PROVIDER") → /provider-dashboard

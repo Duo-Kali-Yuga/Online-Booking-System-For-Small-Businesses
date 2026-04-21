@@ -7,6 +7,16 @@ import Booking from "./pages/Booking";
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 
+import ProviderDashboard from "./pages/provider/ProviderDashboard";
+import ProviderServices from "./pages/provider/ProviderServices";
+import ProviderBookings from "./pages/provider/ProviderBookings";
+import ProviderAvailability from "./pages/provider/ProviderAvailability";
+import AdminDashboard from "./pages/admin/adminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminProviders from "./pages/admin/AdminProviders";
+import AdminAppointments from "./pages/admin/AdminAppointments";
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -16,21 +26,45 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/app" element={<Home />} />
 
-        <Route path="/provider" element={<ProviderDashboard />} />
-        <Route path="/provider/services" element={<ProviderServices />} />
-        <Route path="/provider/bookings" element={<ProviderBookings />} />
-        <Route path="/provider/availability" element={<ProviderAvailability />} />
-        
+        <Route path="/provider">
+          <Route index element={<ProviderDashboard />} />
+          <Route path="services" element={<ProviderServices />} />
+          <Route path="bookings" element={<ProviderBookings />} />
+          <Route path="availability" element={<ProviderAvailability />} />
+        </Route>
 
-        <Route path="/booking/:providerId" element={<Booking />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
+        <Route path="/admin">
+          <Route index element={
+            <ProtectedRoute role="ADMIN">
+              <AdminDashboard />
             </ProtectedRoute>
-          }
-        />
+          }/>
+          <Route path="users" element={
+            <ProtectedRoute role="ADMIN">
+              <AdminUsers />
+            </ProtectedRoute>
+          }/>
+          <Route path="providers" element={
+            <ProtectedRoute role="ADMIN">
+              <AdminProviders />
+            </ProtectedRoute>
+          }/>
+          <Route path="appointments" element={
+            <ProtectedRoute role="ADMIN">
+              <AdminAppointments />
+            </ProtectedRoute>
+          }/>
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute role="ADMIN">
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+        
+        <Route path="/booking/:providerId" element={<Booking />} />
       </Routes>
     </BrowserRouter>
   );
