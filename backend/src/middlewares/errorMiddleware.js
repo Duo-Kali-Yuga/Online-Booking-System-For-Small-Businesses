@@ -1,25 +1,30 @@
-export const errorHandler = (err, req, res, next) => {
-  console.error(err);
+import { errorResponse } from "../utils/response.js";
 
-  // Zod errors
+export const errorHandler = (err, req, res, next) => {
+  console.error("❌ ERROR:", err.message);
+
+  // Zod validation
   if (err.name === "ZodError") {
-    return res.status(400).json({
-      message: "Validation error",
-      errors: err.errors.map((e) => ({
+    return errorResponse(
+      res,
+      "Validation error",
+      400,
+      err.errors.map((e) => ({
         field: e.path.join("."),
         message: e.message,
-      })),
-    });
+      }))
+    );
   }
 
-  // Mongo duplicate key
+  // Mongo duplicate
   if (err.code === 11000) {
-    return res.status(400).json({
-      message: "Duplicate field value",
-    });
+    return errorResponse(res, "Duplicate field value", 400);
   }
 
-  res.status(500).json({
-    message: err.message || "Server error",
-  });
+  // Custom errors
+  if (err.message) {
+    return errorResponse(res, err.message, 400);
+  }
+
+  return errorResponse(res, "Server error", 500);
 };
