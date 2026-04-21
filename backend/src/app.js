@@ -6,6 +6,7 @@ import providerRoutes from "./routes/providerRoutes.js";
 // import serviceRoutes from "./routes/serviceRoutes.js";
 import availabilityRoutes from "./routes/availabilityRoutes.js";
 import slotRoutes from "./routes/slotRoutes.js";
+import appointmentRoutes from "./routes/appointmentRoutes.js";
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use("/api/providers", providerRoutes);
 // app.use("/api/services", serviceRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/slots", slotRoutes);
+app.use("/api/appointments", appointmentRoutes);
+
 
 
 app.get("/", (req, res) => {
