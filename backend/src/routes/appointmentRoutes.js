@@ -6,6 +6,7 @@ import {
   createAppointmentSchema,
   rescheduleSchema,
 } from "../validators/appointmentValidator.js";
+import { validate } from "../middlewares/validate.js";
 
 
 
