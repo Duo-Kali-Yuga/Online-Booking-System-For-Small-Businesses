@@ -1,12 +1,13 @@
 import express from "express";
 import { bookAppointment } from "../controllers/appointmentController.js";
-import { protect } from "../middlewares/authMiddleware.js";
 import { cancelAppointment, rescheduleAppointment } from "../controllers/appointmentController.js";
 import {
   createAppointmentSchema,
-  rescheduleSchema,
+  rescheduleSchema
 } from "../validators/appointmentValidator.js";
 import { validate } from "../middlewares/validate.js";
+import { getProviderAppointments, getClientAppointments } from "../controllers/appointmentController.js";
+import { protect, isProvider } from "../middlewares/authMiddleware.js";
 
 
 
@@ -20,13 +21,9 @@ router.patch(
   validate(rescheduleSchema),
   rescheduleAppointment
 );
+router.get("/provider-bookings", protect, isProvider, getProviderAppointments);
+router.get("/my-bookings", protect, getClientAppointments);
 
 
 
 export default router;
-
-
-
-
-
-

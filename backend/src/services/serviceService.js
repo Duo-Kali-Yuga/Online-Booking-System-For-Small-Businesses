@@ -14,8 +14,21 @@ export const createService = async (userId, data) => {
   return service;
 };
 
-export const getProviderServices = async (providerId) => {
-  return await Service.find({ provider: providerId });
+// export const getProviderServices = async (providerId) => {
+//   return await Service.find({ provider: providerId });
+// };
+
+// controllers/serviceController.js
+export const getServicesByProvider = async (req, res) => {
+  try {
+    const { providerId } = req.params;
+    // CRITICAL: Ensure the field name here matches your Schema (e.g., provider: providerId)
+    const services = await Service.find({ provider: providerId }); 
+    
+    res.json({ success: true, data: services });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };
 
 export const getProviders = async (query, pagination) => {

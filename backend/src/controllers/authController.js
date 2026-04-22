@@ -4,21 +4,27 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+  
+    const { name, email, password, role, adminSecret } = req.body;
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "User already exists" });
+    let assignedRole = 'client'; // Default
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Only promote to admin if the secret key matches
+    if (role === 'admin' && adminSecret === process.env.ADMIN_REGISTRATION_KEY) {
+      assignedRole = 'admin';
+    } else if (role === 'provider') {
+      assignedRole = 'provider';
+    }
 
+    
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
-      role,
+      password,
+      role: assignedRole
     });
-
+    
+    console.log(assignedRole)
     res.status(201).json({ message: "User registered", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -35,6 +41,10 @@ export const login = async (req, res) => {
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
+
+  console.log(isMatch)
+  console.log(password)
+  console.log(user.password)
 
   if (!isMatch) {
     return res.status(400).json({ message: "Invalid credentials" });

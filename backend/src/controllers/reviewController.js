@@ -8,7 +8,7 @@ export const createReview = async (req, res) => {
   const appointment = await Appointment.findOne({
     _id: appointmentId,
     client: req.user.id,
-    status: "completed",
+    status: "confirmed",
   });
 
   if (!appointment) {

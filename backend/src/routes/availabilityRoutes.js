@@ -3,11 +3,11 @@ import {
   setAvailability,
   getAvailability,
 } from "../controllers/availabilityController.js";
-import { protect, isAdmin } from "../middlewares/authMiddleware.js";
+import { protect, isProvider } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", protect, isAdmin, setAvailability);
+router.post("/", protect, isProvider, setAvailability);
 router.get("/:providerId", getAvailability);
 
 export default router;

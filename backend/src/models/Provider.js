@@ -28,9 +28,17 @@ const providerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-providerSchema.index({
-  businessName: "text",
-  industry: "text",
+providerSchema.index({ 
+  businessName: 'text', 
+  industry: 'text', 
+  description: 'text' 
+}, {
+  weights: {
+    businessName: 10, // Give higher priority to the name
+    industry: 5,
+    description: 1
+  },
+  name: "ProviderSearchIndex"
 });
 
 export default mongoose.model("Provider", providerSchema);

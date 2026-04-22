@@ -2,15 +2,21 @@ import express from "express";
 import {
   createProvider,
   getMyProvider,
-  getProviders
+  getProviders,
+  getProviderById
 } from "../controllers/providerController.js";
-import { protect, isAdmin } from "../middlewares/authMiddleware.js";
+import {
+  updateAppointmentStatus,
+} from "../controllers/appointmentController.js";
+import { protect, isProvider } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 router.get("/", getProviders);
 
-router.post("/", protect, isAdmin, createProvider);
-router.get("/me", protect, isAdmin, getMyProvider);
+router.post("/", protect, isProvider, createProvider);
+// router.get("/me", protect, isProvider, getMyProvider);
+router.get("/:id", getProviderById);
+router.patch('/:id/status', protect, isProvider, updateAppointmentStatus);
 
 export default router;

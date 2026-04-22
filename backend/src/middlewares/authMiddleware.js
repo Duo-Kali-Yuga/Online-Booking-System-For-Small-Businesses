@@ -23,9 +23,22 @@ export const protect = async (req, res, next) => {
   }
 };
 
-export const isAdmin = (req, res, next) => {
-  if (req.user.role !== "admin")
-    return res.status(403).json({ message: "Admin only" });
+export const isProvider = (req, res, next) => {
+  // Debug: See what role is actually being passed
+  console.log("User role in middleware:", req.user?.role);
+  
+  if (req.user && req.user.role === 'provider') {
+    next();
+  } else {
+    res.status(403).json({ message: "Access denied. Only providers can perform this action." });
+  }
+};
 
+export const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+      next();
+  } else {
+      res.status(403).json({ message: "Not authorized as an admin" });
+  }
   next();
 };

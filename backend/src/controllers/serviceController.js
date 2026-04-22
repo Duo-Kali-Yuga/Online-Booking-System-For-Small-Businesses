@@ -1,6 +1,7 @@
 import * as serviceService from "../services/serviceService.js";
 import { successResponse } from "../utils/response.js";
 
+
 // export const createService = async (req, res) => {
 //   try {
 //     const service = await serviceService.createService(
@@ -36,7 +37,10 @@ export const createService = async (req, res) => {
 // };
 
 export const getMyServices = async (req, res) => {
-  const services = await serviceService.getProviderServices(
+  // const services = await serviceService.getProviderServices(
+  //   req.params.providerId
+  // );
+  const services = await serviceService.getServicesByProvider(
     req.params.providerId
   );
 
@@ -52,3 +56,4 @@ export const deleteService = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+

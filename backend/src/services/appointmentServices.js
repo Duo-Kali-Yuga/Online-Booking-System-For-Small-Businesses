@@ -5,6 +5,7 @@ import Provider from "../models/Provider.js";
 import { getAvailableSlots } from "./slotService.js";
 import { sendEmail } from "../utils/email.js";
 import User from "../models/User.js";
+import dayjs from "dayjs"
 
 
 
@@ -46,7 +47,7 @@ export const createAppointment = async (
           client: userId,
           provider: providerId,
           service: serviceId,
-          date: new Date(date),
+          date: dayjs(date).startOf('day').toDate(),
           startTime,
           endTime,
           status: "confirmed",
@@ -64,6 +65,12 @@ export const createAppointment = async (
     });
 
     await session.commitTransaction();
+
+    await notifyBookingSuccess(req.user.email, {
+      date: newAppointment.date,
+      startTime: newAppointment.startTime,
+      businessName: provider.businessName
+    });
     session.endSession();
 
     return appointment[0];
