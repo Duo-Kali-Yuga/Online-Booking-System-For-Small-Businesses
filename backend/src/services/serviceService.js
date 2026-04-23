@@ -23,6 +23,7 @@ export const getServicesByProvider = async (req, res) => {
   try {
     const { providerId } = req.params;
     // CRITICAL: Ensure the field name here matches your Schema (e.g., provider: providerId)
+    console.log("Inside Get Provider:", providerId)
     const services = await Service.find({ provider: providerId }); 
     
     res.json({ success: true, data: services });

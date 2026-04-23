@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../api/axios';
 import dayjs from 'dayjs';
+import ProviderHeaderStart from '../../components/ProviderHeaderStart';
+
+
+
+
 
 const BookingPage = () => {
+  const API_BASE = "http://localhost:5000";
+
   const { providerId } = useParams();
   const navigate = useNavigate();
 
@@ -13,6 +20,16 @@ const BookingPage = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
   const [availableSlots, setAvailableSlots] = useState([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
+  const [searchParams] = useSearchParams();
+  const rescheduleId = searchParams.get('reschedule');
+
+  useEffect(() => {
+    const fetchProvider = async () => {
+      const res = await api.get(`/providers/${providerId}`);
+      setProvider(res.data.data);
+    };
+    fetchProvider();
+  }, [providerId]);
 
   // 1. Fetch Provider and their Services
   useEffect(() => {
@@ -24,13 +41,8 @@ const BookingPage = () => {
           api.get(`/services/${providerId}`)
         ]);
 
-        console.log("Provider Data:", pRes.data);
-        
-
         const providerData = pRes.data.data || pRes.data;
         const servicesData = sRes.data.data || sRes.data;
-
-        console.log("Services loaded into state:", servicesData);
 
         setProvider(providerData);
         setServices(Array.isArray(servicesData) ? servicesData : []);
@@ -45,13 +57,13 @@ const BookingPage = () => {
   }, [providerId]);
 
   const fetchSlots = async () => {
-    // Ensure we have everything before making the call
-    console.log("Check before fetch:", { providerId, selectedService, selectedDate });
+
+
     if (!providerId || !selectedService || !selectedDate) return;
 
     setLoadingSlots(true);
     try {
-      const res = await api.get('/slots', { // Removed /api/ if it's in your baseURL
+      const res = await api.get('/slots', {
         params: { 
           providerId, 
           date: selectedDate, 
@@ -59,10 +71,6 @@ const BookingPage = () => {
         }
       });
 
-      console.log("Slots from backend:", res.data);
-
-      // Since your backend does res.json(slots), res.data IS the array.
-      // We add a safety check just in case.
       const slotsArray = Array.isArray(res.data) ? res.data : (res.data.data || []);
       setAvailableSlots(slotsArray);
 
@@ -76,23 +84,27 @@ const BookingPage = () => {
 
   // 2. Fetch Available Slots when Service or Date changes
   useEffect(() => {
-  console.log("Check before fetch: useEffect", { providerId, selectedService, selectedDate });
+    console.log("Check before fetch: useEffect", { providerId, selectedService, selectedDate });
     if (selectedService && selectedDate) {
       fetchSlots();
     }
   }, [selectedService, selectedDate]);
 
 
-  const handleBook = async (slot) => {
+  const handleBooking = async (slot) => {
     try {
       await api.post('/appointments', {
-        providerId,
+        providerId: providerId,
         serviceId: selectedService._id,
         date: selectedDate,
-        startTime: slot.start
+        startTime: slot.start,
+        endTime: slot.end,
+        // Pass the ID to the backend if it exists
+        rescheduleId: rescheduleId || null 
       });
-      alert("Booking Successful! Check your email.");
-      navigate('/dashboard'); // Go to client dashboard
+
+      alert(rescheduleId ? "Reschedule Successful!" : "Booking Successful!");
+      navigate('/dashboard');
     } catch (err) {
       alert(err.response?.data?.message || "Booking failed");
     }
@@ -107,9 +119,13 @@ const BookingPage = () => {
     </div>
   );
 
-
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <ProviderHeaderStart provider={provider}/>
+      <img 
+        src={provider.avatar ? `${API_BASE}${provider.avatar}` : ""} 
+        className="w-32 h-32 rounded-3xl object-cover"
+      />
       <div className="mb-8 border-b pb-6">
         <h1 className="text-3xl font-bold text-slate-800">{provider.businessName}</h1>
         <p className="text-slate-500">📍 {provider.location?.city}</p>
@@ -165,7 +181,7 @@ const BookingPage = () => {
                 availableSlots.map(slot => (
                   <button
                     key={slot.start}
-                    onClick={() => handleBook(slot)}
+                    onClick={() => handleBooking(slot)}
                     className="p-2 text-sm font-bold border rounded-lg hover:bg-blue-600 hover:text-white transition text-blue-600 border-blue-100"
                   >
                     {slot.start}

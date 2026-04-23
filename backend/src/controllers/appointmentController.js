@@ -16,13 +16,56 @@ import Provider from "../models/Provider.js";
 //   }
 // };
 
+// export const bookAppointment = async (req, res) => {
+//   const appointment = await appointmentService.createAppointment(
+//     req.user._id,
+//     req.body
+//   );
+
+//   return successResponse(res, appointment, "Appointment booked", 201);
+// };
+// export const bookAppointment = async (req, res) => {
+//   const appointment = await appointmentService.createAppointment(
+//     req.user._id,
+//     req.body
+//   );
+
+//   return res.status(201).json({
+//     success: true,
+//     message: "Appointment booked",
+//     data: appointment,
+//   });
+
+// };
+
 export const bookAppointment = async (req, res) => {
-  const appointment = await appointmentService.createAppointment(
+  const { rescheduleId, ...bookingData } = req.body;
+
+  // 1. Create the new appointment using your existing service
+  const newAppointment = await appointmentService.createAppointment(
     req.user._id,
-    req.body
+    bookingData
   );
 
-  return successResponse(res, appointment, "Appointment booked", 201);
+  // 2. If it's a reschedule, handle the old record
+  if (rescheduleId) {
+    try {
+      await Appointment.findOneAndUpdate(
+        { _id: rescheduleId, client: req.user._id },
+        { 
+          status: 'cancelled', 
+          // Optional: link them so you can track the history in your thesis
+          rescheduledTo: newAppointment._id 
+        }
+      );
+    } catch (error) {
+      // We log the error but don't fail the whole request 
+      // because the NEW appointment was already successfully created
+      console.error("Non-critical: Failed to cancel old appointment:", error);
+    }
+  }
+
+  return successResponse(res, newAppointment, "Appointment confirmed", 201);
 };
 
 
@@ -54,28 +97,19 @@ export const rescheduleAppointment = async (req, res) => {
   }
 };
 
+// Inside appointmentController.js
 export const getProviderAppointments = async (req, res) => {
-  console.log("Searching for Provider profile linked to User ID:", req.user._id);
-
   try {
     const provider = await Provider.findOne({ user: req.user._id });
-    
-    if (!provider) {
-      console.log("❌ No provider profile found in the 'providers' collection for this user.");
-      return res.status(404).json({ 
-        success: false, 
-        message: "Provider profile not found. Please complete your profile setup." 
-      });
-    }
-
-    console.log("✅ Provider found:", provider.businessName);
+    if (!provider) return res.status(404).json({ message: "Provider profile not found" });
 
     const appointments = await Appointment.find({ provider: provider._id })
       .populate("client", "name email")
       .populate("service", "name price duration")
       .sort({ date: 1, startTime: 1 });
 
-    res.json({ success: true, data: appointments });
+    // Use successResponse if you have it imported, or keep res.json
+    return res.json({ success: true, data: appointments }); 
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

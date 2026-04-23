@@ -38,15 +38,18 @@ import Service from '../models/Service.js';
 // };
 
 export const getMyServices = async (req, res) => {
-  // const services = await serviceService.getProviderServices(
-  //   req.params.providerId
-  // );
-  const services = await serviceService.getServicesByProvider(
-    req.params.providerId
-  );
+  try {
+    const { providerId } = req.params;
 
-  return successResponse(res, services, "Services fetched");
+    const services = await Service.find({ provider: providerId });
+
+    res.json({ success: true, data: services });
+
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 };
+
 
 export const deleteService = async (req, res) => {
   try {

@@ -13,7 +13,8 @@ import { protect, isProvider } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", protect, validate(createAppointmentSchema), bookAppointment);
+// router.post("/", protect, validate(createAppointmentSchema), bookAppointment);
+router.post("/", protect, bookAppointment);
 router.patch("/:id/cancel", protect, cancelAppointment);
 router.patch(
   "/:id/reschedule",

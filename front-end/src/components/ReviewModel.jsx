@@ -12,7 +12,7 @@ const ReviewModal = ({ isOpen, onClose, appointment, onReviewSuccess }) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await api.post('/api/reviews', {
+      await api.post('/reviews', {
         providerId: appointment.provider._id,
         appointmentId: appointment._id,
         rating,

@@ -13,10 +13,10 @@ export const createAppointment = async (
   userId,
   { providerId, serviceId, date, startTime }
 ) => {
-  const session = await mongoose.startSession();
+  // const session = await mongoose.startSession();
 
   try {
-    session.startTransaction();
+    // session.startTransaction();
 
     const service = await Service.findById(serviceId);
     if (!service) throw new Error("Service not found");
@@ -40,43 +40,58 @@ export const createAppointment = async (
     const isValid = slots.some((s) => s.start === startTime);
     if (!isValid) throw new Error("Slot no longer available");
 
-    
-    const appointment = await Appointment.create(
-      [
-        {
-          client: userId,
-          provider: providerId,
-          service: serviceId,
-          date: dayjs(date).startOf('day').toDate(),
-          startTime,
-          endTime,
-          status: "confirmed",
-        },
-      ],
-      { session }
-    );
+    const appointment = await Appointment.create({
+      client: userId,
+      provider: providerId,
+      service: serviceId,
+      date: dayjs(date).startOf('day').toDate(),
+      startTime,
+      endTime,
+      status: "confirmed",
+    });
+
+    // const appointment = await Appointment.create(
+    //   [
+    //     {
+    //       client: userId,
+    //       provider: providerId,
+    //       service: serviceId,
+    //       date: dayjs(date).startOf('day').toDate(),
+    //       startTime,
+    //       endTime,
+    //       status: "confirmed",
+    //     },
+    //   ],
+    //   // { session }
+    // );
 
     const client = await User.findById(userId);
 
-    await sendEmail({
-      to: client.email,
-      subject: "Appointment Confirmed",
-      text: `Your appointment is confirmed for ${date} at ${startTime}`,
-    });
+    // await sendEmail({
+    //   to: client.email,
+    //   subject: "Appointment Confirmed",
+    //   text: `Your appointment is confirmed for ${date} at ${startTime}`,
+    // });
+    
+    // await notifyBookingSuccess(req.user.email, {
+    //   date: newAppointment.date,
+    //   startTime: newAppointment.startTime,
+    //   businessName: provider.businessName
+    // });
 
-    await session.commitTransaction();
+    // await session.commitTransaction();
 
-    await notifyBookingSuccess(req.user.email, {
-      date: newAppointment.date,
-      startTime: newAppointment.startTime,
-      businessName: provider.businessName
-    });
-    session.endSession();
+    // await notifyBookingSuccess(req.user.email, {
+    //   date: newAppointment.date,
+    //   startTime: newAppointment.startTime,
+    //   businessName: provider.businessName
+    // });
+    // session.endSession();
 
-    return appointment[0];
+    return appointment;
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
+    // await session.abortTransaction();
+    // session.endSession();
     
     if (error.code === 11000) {
       throw new Error("Slot already booked");
@@ -86,29 +101,66 @@ export const createAppointment = async (
   }
 };
 
+// export const cancelAppointment = async (userId, appointmentId) => {
+//   const appointment = await Appointment.findById(appointmentId);
+
+//   if (!appointment) throw new Error("Appointment not found");
+//   if (appointment.status === "cancelled") throw new Error("Appointment already cancelled");
+
+//   console.log("Step 1:", appointment)
+//   const isClient = appointment.client.toString() === userId.toString();
+//   console.log("Step 2:", isClient)
+
+//   // 2. Check if the user is the Provider
+//   // We look for a Provider profile that matches the appointment and is owned by the current userId
+//   const providerProfile = await Provider.findOne({ 
+//     _id: appointment.provider, 
+//     user: userId 
+//   });
+//   console.log("Step 3:", providerProfile)
+//   const isProvider = !!providerProfile;
+
+//   // 3. Authorization check
+//   if (!isClient && !isProvider)
+//     throw new Error("Not authorized to cancel this appointment");
+
+//   if (new Date(appointment.date) < new Date())
+//     throw new Error("Cannot cancel past appointments");
+
+//   appointment.status = "cancelled";
+//   await appointment.save();
+  
+//   return appointment;
+// };
+
 export const cancelAppointment = async (userId, appointmentId) => {
   const appointment = await Appointment.findById(appointmentId);
 
   if (!appointment) throw new Error("Appointment not found");
+  if (appointment.status === "cancelled") throw new Error("Appointment already cancelled");
 
-  if (appointment.status === "cancelled")
-    throw new Error("Appointment already cancelled");
-
-  
-  const provider = await Provider.findOne({ user: userId });
-
+  // Auth Checks
   const isClient = appointment.client.toString() === userId.toString();
-  const isProvider =
-    provider && appointment.provider.toString() === provider._id.toString();
+  const providerProfile = await Provider.findOne({ 
+    _id: appointment.provider, 
+    user: userId 
+  });
+  const isProvider = !!providerProfile;
 
   if (!isClient && !isProvider)
     throw new Error("Not authorized to cancel this appointment");
 
-  if (new Date(appointment.date) < new Date())
-    throw new Error("Cannot cancel past appointments");
+  // DATE VALIDATION FIX:
+  // Use .isBefore() with 'day' to allow cancellations on the same day
+  const apptDate = dayjs(appointment.date);
+  const now = dayjs();
+
+  if (apptDate.isBefore(now, 'day')) {
+    throw new Error("Cannot cancel appointments from previous days");
+  }
 
   appointment.status = "cancelled";
   await appointment.save();
-
+  
   return appointment;
 };

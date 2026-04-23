@@ -16,7 +16,8 @@ const providerSchema = new mongoose.Schema(
     industry: {
       type: String,
       required: true,
-      enum: ["doctor", "barber", "salon", "consultant", "other"],
+      enum: ['healthcare', 'beauty', 'education', 'consulting', 'Fitness', 'other'],
+      default: 'other'
     },
     description: String,
     location: {
@@ -24,6 +25,32 @@ const providerSchema = new mongoose.Schema(
       city: String,
       country: String,
     },
+    avatar: {
+      type: String,
+      default: "https://ui-avatars.com/api/?background=random" // Default if no image uploaded
+    },
+    ratingStats: {
+      averageRating: { type: Number, default: 0 },
+      totalReviews: { type: Number, default: 0 }
+    },
+    settings: {
+        bufferTime: { type: Number, default: 10 },
+        operatingHours: [
+          {
+            dayOfWeek: Number, // 0-6
+            dayName: String,
+            isOpen: { type: Boolean, default: true },
+            startTime: { type: String, default: "09:00" },
+            endTime: { type: String, default: "17:00" },
+            breaks: [
+            {
+              start: String,
+              end: String
+            }
+          ]
+        }
+      ]
+    }
   },
   { timestamps: true }
 );

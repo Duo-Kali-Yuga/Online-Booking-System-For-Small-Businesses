@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../api/axios';
+import api from '../../api/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import dayjs from 'dayjs';
 
@@ -13,8 +13,8 @@ const ProviderBookings = () => {
 
   const fetchBookings = async () => {
     try {
-      // Change from '/api/admin/appointments' to the new specific route
-      const res = await api.get('/api/appointments/my-bookings'); 
+      // Correct endpoint based on your routes file
+      const res = await api.get('/appointments/provider-bookings'); 
       setBookings(res.data.data);
     } catch (err) {
       console.error("Error fetching bookings", err);

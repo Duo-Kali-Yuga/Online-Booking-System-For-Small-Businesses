@@ -3,7 +3,8 @@ import {
   createProvider,
   getMyProvider,
   getProviders,
-  getProviderById
+  getProviderById,
+  updateProviderProfile
 } from "../controllers/providerController.js";
 import {
   updateAppointmentStatus,
@@ -18,5 +19,6 @@ router.post("/", protect, isProvider, createProvider);
 // router.get("/me", protect, isProvider, getMyProvider);
 router.get("/:id", getProviderById);
 router.patch('/:id/status', protect, isProvider, updateAppointmentStatus);
+router.patch("/profile", protect, isProvider, updateProviderProfile);
 
 export default router;

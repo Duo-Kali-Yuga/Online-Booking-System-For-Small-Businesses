@@ -17,6 +17,7 @@ router.post("/", protect, isProvider, validate(serviceSchema), createService);
 // router.get("/:providerId", getMyServices);
 router.delete("/:id", protect, isProvider, deleteService);
 router.get('/me', protect, getMyServicesMe);
+router.get('/:providerId', protect, getMyServices);
 
 
 

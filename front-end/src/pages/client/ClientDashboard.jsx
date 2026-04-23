@@ -2,15 +2,18 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import dayjs from 'dayjs';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import ReviewModal from '../../components/ReviewModel';
 
 
 const ClientDashboard = () => {
+  const navigate = useNavigate()
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedAppt, setSelectedAppt] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const API_BASE = "http://localhost:5000";
 
   useEffect(() => {
     fetchMyAppointments();
@@ -31,7 +34,7 @@ const ClientDashboard = () => {
   const handleCancel = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this appointment?")) return;
     try {
-      await api.patch(`/api/appointments/${id}/cancel`);
+      await api.patch(`/appointments/${id}/cancel`);
       // Update local state to show 'cancelled' immediately
       setAppointments(prev => prev.map(appt => 
         appt._id === id ? { ...appt, status: 'cancelled' } : appt
@@ -58,16 +61,20 @@ const ClientDashboard = () => {
     <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center mb-4">
       <div className="flex gap-4 items-center">
         <div className="bg-slate-100 p-3 rounded-lg text-center min-w-[70px]">
-          <span className="block text-xs font-bold text-slate-500 uppercase">{dayjs(appt.date).format('MMM')}</span>
+          <span className="block text-xs font-bold text-slate-500 uppercase">
+            {dayjs(appt.date).format('MMM')}
+          </span>
           <span className="text-xl font-black">{dayjs(appt.date).format('DD')}</span>
         </div>
         <div>
+        <img 
+          src={appt.provider.avatar ? `${API_BASE}${appt.provider.avatar}` : ""} 
+          className="w-32 h-32 rounded-3xl object-cover"
+        />
           <h4 className="font-bold text-slate-800">{appt.provider?.businessName}</h4>
           <p className="text-sm text-slate-500">{appt.service?.name} • {appt.startTime}</p>
         </div>
       </div>
-
-
 
       <div className="flex items-center gap-3">
         {/* Status Badge */}
@@ -77,30 +84,36 @@ const ClientDashboard = () => {
           {appt.status}
         </span>
 
-        {/* Action Button: Review (Only if Past & Confirmed) */}
-        {isPast && appt.status === 'confirmed' && (
+        {/* Action: Review */}
+        {isPast && appt.status === 'confirmed' && !appt.isReviewed && (
           <button 
             onClick={() => handleOpenReview(appt)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold"
           >
             Leave a Review
           </button>
         )}
                 
-        {/* Action Button: Cancel (Only if Upcoming) */}
+        {/* Action: Cancel (Now connected to handleCancel) */}
         {!isPast && appt.status === 'confirmed' && (
-          <button className="text-xs text-red-500 font-semibold hover:underline">
+          <button 
+            onClick={() => handleCancel(appt._id)}
+            className="text-xs text-red-500 font-semibold hover:underline"
+          >
             Cancel
           </button>
         )}
 
-      <button 
-        onClick={() => Navigate(`/booking/${appt.provider._id}`)}
-        className="text-xs text-blue-600 font-semibold hover:underline"
-      >
-        Reschedule
-      </button>
-            </div>
+        {/* Action: Reschedule (Fixed Navigate Bug) */}
+        {!isPast && (
+          <button 
+            onClick={() => navigate(`/booking/${appt.provider?._id}?reschedule=${appt._id}`)}
+            className="text-xs text-blue-600 font-semibold hover:underline"
+          >
+            Reschedule
+          </button>
+        )}
+      </div>
     </div>
   );
 
@@ -139,7 +152,7 @@ const ClientDashboard = () => {
         </section>
       </div>
 
-      {loading ? (
+      {/* {loading ? (
         <div className="text-center py-10">Loading your schedule...</div>
       ) : (
         <div className="space-y-4">
@@ -153,7 +166,6 @@ const ClientDashboard = () => {
                 className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4"
               >
                 <div className="flex gap-6 items-center">
-                  {/* Date Badge */}
                   <div className="bg-blue-50 text-blue-700 p-3 rounded-xl text-center min-w-[80px]">
                     <div className="text-xs uppercase font-bold">{dayjs(appt.date).format('MMM')}</div>
                     <div className="text-2xl font-black">{dayjs(appt.date).format('DD')}</div>
@@ -196,7 +208,7 @@ const ClientDashboard = () => {
             </div>
           )}
         </div>
-      )}
+      )} */}
     <ReviewModal 
       isOpen={isModalOpen}
       onClose={() => setIsModalOpen(false)}

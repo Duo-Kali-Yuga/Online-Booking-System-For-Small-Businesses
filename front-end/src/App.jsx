@@ -15,6 +15,11 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import ProviderSetup from './pages/provider/ProviderSetup';
 import BookingPage from './pages/client/BookingPage';
 import ProviderServices from './pages/provider/ProviderServices';
+import AvailabilityManager from './pages/provider/components/AvailabilityManager';
+import ProviderBookings from './pages/provider/ProviderBookings';
+import EditProviderProfile from './pages/provider/EditProviderProfile';
+
+
 
 
 
@@ -43,6 +48,7 @@ function App() {
           <Route path="/booking/:providerId" element={<BookingPage />} />
 
           {/* --- Provider Routes --- */}
+          <Route path="/book/:providerId" element={<BookingPage />} />
           <Route path="/setup-profile" element={
             <ProtectedRoute allowedRoles={['provider']}>
               <SetupProviderProfile />
@@ -54,6 +60,10 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/provider/setup" element={<ProviderSetup />} />
+          <Route path="/provider/profile" element={<EditProviderProfile />} />
+
+          <Route path="/provider/availability" element={<AvailabilityManager />} /> {/* /provider/availability */}
+          <Route path="/provider/bookings" element={<ProviderBookings />} /> {/* /provider/bookings */}
 
           <Route path="/provider/services" element={<ProviderServices />} />
 

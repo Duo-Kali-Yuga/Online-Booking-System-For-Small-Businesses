@@ -3,14 +3,17 @@ import api from '../../api/axios';
 import { motion } from 'framer-motion';
 import { FiUsers, FiDollarSign, FiCalendar, FiSettings } from 'react-icons/fi';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate, Link } from 'react-router-dom';
+import DashboardStats from './components/DashboardStats';
+import CalendarAgenda from './components/CalendarAgenda';
 
 const ProviderDashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [stats, setStats] = useState({ revenue: 0, count: 0, pending: 0 });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [bookings, setBookings] = useState([]);
+  const [loading2, setLoading2] = useState(true);
 
   const fetchDashboardData = async () => {
     try {
@@ -69,9 +72,26 @@ const ProviderDashboard = () => {
     </div>
   );
 
+
   const handleAddService = () => {
     navigate('/provider/services'); // Or wherever your service management page lives
   };
+
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        const res = await api.get('/appointments/provider-bookings');
+        setBookings(res.data.data || []);
+      } catch (err) {
+        console.error("Dashboard load failed", err);
+      } finally {
+        setLoading2(false);
+      }
+    };
+    loadDashboard();
+  }, []);
+
+
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
@@ -203,6 +223,43 @@ const ProviderDashboard = () => {
           </div>
         </div>
       </div>
+      {/* { */}
+        // (!loading) ? <div className="p-10 text-center">Loading System Metrics...</div>
+        // :
+        <div className="p-6 bg-slate-50 min-h-screen">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-2xl font-bold text-slate-800 mb-8">Provider Command Center</h1>
+            
+            {/* 1. Statistics Summary */}
+            <DashboardStats bookings={bookings} />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* 2. Main Calendar/Agenda View */}
+              <div className="lg:col-span-2">
+                <CalendarAgenda bookings={bookings} />
+              </div>
+
+              {/* 3. Quick Actions or Notifications */}
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                  <h3 className="font-bold text-slate-800 mb-4">Quick Links</h3>
+                  <div className="flex flex-col gap-2">
+                    <button className="text-left p-2 hover:bg-blue-50 text-blue-600 rounded">Manage Services</button>
+                    <button className="text-left p-2 hover:bg-blue-50 text-blue-600 rounded">Edit Availability</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/* } */}
+
+      <Link 
+        to="/provider/availability" 
+        className="block w-full text-center bg-blue-500 text-white border border-blue-400 py-2 rounded-lg font-bold hover:bg-blue-400 transition"
+      >
+        Edit Availability
+      </Link>
     </div>
   );
 };

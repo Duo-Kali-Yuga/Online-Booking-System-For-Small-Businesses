@@ -3,6 +3,8 @@ import Provider from "../models/Provider.js";
 import { getPagination } from "../utils/pagination.js";
 import { successResponse } from "../utils/response.js";
 import { getCache, setCache } from "../utils/cache.js";
+import multer from 'multer';
+import path from 'path';
 
 
 
@@ -136,4 +138,92 @@ export const getProviders = async (req, res) => {
     success: true,
     data: result // This makes the path res.data.data.providers
   });
+};
+
+// controllers/providerController.js
+
+// 1. Update Profile (Include Industry)
+// export const updateProviderProfile = async (req, res) => {
+//   try {
+//     const { businessName, bio, location, avatar, phone, industry } = req.body;
+//     const provider = await Provider.findOneAndUpdate(
+//       { user: req.user._id },
+//       { businessName, bio, location, avatar, phone, industry },
+//       { new: true, runValidators: true }
+//     );
+//     res.json({ success: true, data: provider });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+// export const updateProviderProfile = async (req, res) => {
+//   try {
+//     const { businessName, bio, location, avatar, phone, industry, settings } = req.body;
+    
+//     const provider = await Provider.findOneAndUpdate(
+//       { user: req.user._id },
+//       { businessName, bio, location, avatar, phone, industry, settings },
+//       { new: true, runValidators: true }
+//     );
+    
+//     res.json({ success: true, data: provider });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+// 2. Delete Provider Account
+export const deleteProviderAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Find the provider document
+    const provider = await Provider.findOne({ user: userId });
+    if (!provider) return res.status(404).json({ message: "Provider profile not found" });
+
+    // Remove associated data (Appointments and the Provider profile)
+    await Appointment.deleteMany({ provider: provider._id });
+    await Provider.deleteOne({ _id: provider._id });
+    
+    // Optionally delete the User document as well
+    await User.findByIdAndDelete(userId);
+
+    res.json({ success: true, message: "Account and associated data deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+// Configure how the file is stored
+const storage = multer.diskStorage({
+  destination: 'uploads/avatars/',
+  filename: (req, file, cb) => {
+    // Save file as: providerID-timestamp.jpg
+    cb(null, `${req.user._id}-${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
+
+export const upload = multer({ storage });
+
+export const updateProviderProfile = async (req, res) => {
+  try {
+    const updateData = { ...req.body };
+    
+    // If a file was uploaded, set the avatar path to the local URL
+    if (req.file) {
+      updateData.avatar = `/uploads/avatars/${req.file.filename}`;
+    }
+
+    const provider = await Provider.findOneAndUpdate(
+      { user: req.user._id },
+      updateData,
+      { new: true }
+    );
+    
+    res.json({ success: true, data: provider });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

@@ -37,15 +37,23 @@ const ProviderServices = () => {
   //   }
   // };
 
+  // const fetchServices = async () => {
+  //   try {
+  //     // The backend knows who you are from the token in the headers
+  //     const res = await api.get('/services/me'); 
+  //     const finalData = res.data.data || res.data;
+  //     setServices(Array.isArray(finalData) ? finalData : []);
+  //   } catch (err) {
+  //     console.error("Fetch error", err);
+  //   }
+  // };
+
   const fetchServices = async () => {
     try {
-      // The backend knows who you are from the token in the headers
-      const res = await api.get('/services/me'); 
+      const res = await api.get('/services/me'); // Backend handles the ID via token
       const finalData = res.data.data || res.data;
       setServices(Array.isArray(finalData) ? finalData : []);
-    } catch (err) {
-      console.error("Fetch error", err);
-    }
+    } catch (err) { console.error("Fetch error", err); }
   };
 
   // 2. Handle Form Submission
@@ -74,15 +82,33 @@ const ProviderServices = () => {
   //     }
   //   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     // No need to pass providerId here, backend adds it from the token!
+  //     await api.post('/services', formData);
+  //     setFormData({ name: '', duration: '', price: '' });
+  //     fetchServices();
+  //   } catch (err) {
+  //     alert("Check if you are logged in correctly.");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // CRITICAL for your math: Duration must be > 0
+    if (formData.duration <= 0) {
+      alert("Duration must be at least 1 minute.");
+      return;
+    }
+
     try {
-      // No need to pass providerId here, backend adds it from the token!
       await api.post('/services', formData);
       setFormData({ name: '', duration: '', price: '' });
       fetchServices();
     } catch (err) {
-      alert("Check if you are logged in correctly.");
+      alert("Error adding service.");
     }
   };
 

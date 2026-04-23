@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { FiLogOut, FiUser, FiGrid, FiSearch, FiShield } from 'react-icons/fi';
+import { FiLogOut, FiUser, FiGrid, FiSearch, FiShield, FiClock } from 'react-icons/fi';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -42,6 +42,13 @@ const Navbar = () => {
               <Link to="/provider/services" className="text-slate-600 font-medium hover:text-blue-600">
                 Services
               </Link>
+              {/* ADD THIS LINK HERE */}
+              <Link to="/provider/availability" className="flex items-center gap-2 text-slate-600 font-medium hover:text-blue-600">
+                <FiClock /> Availability
+              </Link>
+              <Link to="/provider/profile" className="flex items-center gap-2 text-slate-600 font-medium hover:text-blue-600">
+                <FiUser /> Edit Profile
+              </Link>
             </>
           )}
 
@@ -55,9 +62,18 @@ const Navbar = () => {
         {/* User Profile & Logout */}
         <div className="flex items-center gap-4 border-l pl-8 border-slate-100">
           <div className="text-right hidden sm:block">
-            <p className="text-xs font-bold text-slate-800 uppercase tracking-widest">{user.role}</p>
-            <p className="text-sm text-slate-500">{user.name}</p>
+            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{user.role}</p>
+            <p className="text-sm font-bold text-slate-800">{user.name}</p>
           </div>
+          
+          <Link to={user.role === 'provider' ? "/provider/profile" : "/settings"}>
+            <img 
+              src={user.avatar ? `http://localhost:5000${user.avatar}` : `https://ui-avatars.com/api/?name=${user.name}&background=random`} 
+              alt="Profile"
+              className="w-10 h-10 rounded-xl object-cover border-2 border-slate-100 hover:border-blue-500 transition-all"
+            />
+          </Link>
+
           <button 
             onClick={handleLogout}
             className="p-2 text-slate-400 hover:text-red-500 transition-colors"

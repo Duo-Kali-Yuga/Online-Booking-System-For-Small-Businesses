@@ -36,6 +36,14 @@ const appointmentSchema = new mongoose.Schema(
       enum: ["pending", "confirmed", "cancelled"],
       default: "pending",
     },
+    isReviewed: {
+      type: Boolean,
+      default: false
+    },
+    ratingStats: {
+      averageRating: { type: Number, default: 0 },
+      totalReviews: { type: Number, default: 0 }
+    },
     notes: String,
   },
   { timestamps: true }
