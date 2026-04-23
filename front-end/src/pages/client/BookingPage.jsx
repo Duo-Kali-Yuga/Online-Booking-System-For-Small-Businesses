@@ -85,7 +85,7 @@ const BookingPage = () => {
 
   const handleBook = async (slot) => {
     try {
-      await api.post('/api/appointments', {
+      await api.post('/appointments', {
         providerId,
         serviceId: selectedService._id,
         date: selectedDate,

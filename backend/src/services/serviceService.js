@@ -53,18 +53,31 @@ export const getProviders = async (query, pagination) => {
   return { providers, total };
 };
 
-export const deleteService = async (userId, serviceId) => {
-  const provider = await Provider.findOne({ user: userId });
-  if (!provider) throw new Error("Provider not found");
+// export const deleteService = async (userId, serviceId) => {
+//   const provider = await Provider.findOne({ user: userId });
+//   if (!provider) throw new Error("Provider not found");
 
-  const service = await Service.findById(serviceId);
-  if (!service) throw new Error("Service not found");
+//   const service = await Service.findById(serviceId);
+//   if (!service) throw new Error("Service not found");
 
   
-  if (service.provider.toString() !== provider._id.toString())
-    throw new Error("Not authorized to delete this service");
+//   if (service.provider.toString() !== provider._id.toString())
+//     throw new Error("Not authorized to delete this service");
 
-  await service.deleteOne();
+//   await service.deleteOne();
 
-  return true;
+//   return true;
+// };
+
+// serviceService.js
+export const deleteService = async (providerId, serviceId) => {
+  const service = await Service.findOneAndDelete({ 
+    _id: serviceId, 
+    provider: providerId  // Ensures the logged-in provider OWNS this service
+  });
+
+  if (!service) {
+    throw new Error("Service not found or unauthorized");
+  }
+  return service;
 };

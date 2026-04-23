@@ -12,65 +12,93 @@ const ProviderServices = () => {
     fetchServices();
   }, []);
 
+  // const fetchServices = async () => {
+  //   try {
+  //     // 1. Get the current provider's profile
+  //     const res = await api.get('/providers/me'); 
+      
+  //     // Look for the ID in res.data.data OR res.data depending on your backend fix
+  //     const providerId = res.data.data?._id || res.data._id;
+      
+  //     if (!providerId) {
+  //       console.error("Could not find Provider ID");
+  //       return;
+  //     }
+
+  //     // 2. Fetch services using that ID
+  //     const servicesRes = await api.get(`/services/${providerId}`);
+      
+  //     // Standardize the data extraction
+  //     const finalData = servicesRes.data.data || servicesRes.data;
+  //     setServices(Array.isArray(finalData) ? finalData : []);
+      
+  //   } catch (err) {
+  //     console.error("Error fetching services", err);
+  //   }
+  // };
+
   const fetchServices = async () => {
     try {
-      // 1. Get the current provider's profile
-      const res = await api.get('/providers/me'); 
-      
-      // Look for the ID in res.data.data OR res.data depending on your backend fix
-      const providerId = res.data.data?._id || res.data._id;
-      
-      if (!providerId) {
-        console.error("Could not find Provider ID");
-        return;
-      }
-
-      // 2. Fetch services using that ID
-      const servicesRes = await api.get(`/services/${providerId}`);
-      
-      // Standardize the data extraction
-      const finalData = servicesRes.data.data || servicesRes.data;
+      // The backend knows who you are from the token in the headers
+      const res = await api.get('/services/me'); 
+      const finalData = res.data.data || res.data;
       setServices(Array.isArray(finalData) ? finalData : []);
-      
     } catch (err) {
-      console.error("Error fetching services", err);
+      console.error("Fetch error", err);
     }
   };
 
   // 2. Handle Form Submission
-  const handleSubmit = async (e) => {
-      e.preventDefault();
+  // const handleSubmit = async (e) => {
+  //     e.preventDefault();
       
-      // Validation check
-      if (formData.duration <= 0 || formData.price < 0) {
-        alert("Please enter valid positive values");
-        return;
-      }
+  //     // Validation check
+  //     if (formData.duration <= 0 || formData.price < 0) {
+  //       alert("Please enter valid positive values");
+  //       return;
+  //     }
 
-      setLoading(true);
-      try {
-        // Your backend likely needs the providerId associated with the service.
-        // If your backend doesn't automatically add it from the token, 
-        // you'd add it here.
-        await api.post('/services', formData);
+  //     setLoading(true);
+  //     try {
+  //       // Your backend likely needs the providerId associated with the service.
+  //       // If your backend doesn't automatically add it from the token, 
+  //       // you'd add it here.
+  //       await api.post('/services', formData);
         
-        setFormData({ name: '', duration: '', price: '' });
-        fetchServices(); 
-      } catch (err) {
-        alert(err.response?.data?.message || "Error adding service");
-      } finally {
-        setLoading(false);
-      }
-    };
+  //       setFormData({ name: '', duration: '', price: '' });
+  //       fetchServices(); 
+  //     } catch (err) {
+  //       alert(err.response?.data?.message || "Error adding service");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // No need to pass providerId here, backend adds it from the token!
+      await api.post('/services', formData);
+      setFormData({ name: '', duration: '', price: '' });
+      fetchServices();
+    } catch (err) {
+      alert("Check if you are logged in correctly.");
+    }
+  };
 
   // 3. Handle Delete
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure?")) return;
     try {
-      await api.delete(`/api/services/${id}`);
+      // 1. Try adding /api/ if your other routes use it
+      await api.delete(`/services/${id}`); 
+      
+      // 2. Update UI
       setServices(services.filter(s => s._id !== id));
     } catch (err) {
-      alert("Delete failed");
+      // 3. See the REAL error in the console
+      console.error("Full error object:", err.response?.data);
+      alert(err.response?.data?.message || "Delete failed");
     }
   };
 
