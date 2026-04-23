@@ -44,3 +44,4 @@ export const getProviders = async (query, pagination) => {
   const total = await Provider.countDocuments(filter);
   return { providers, total };
 };
+

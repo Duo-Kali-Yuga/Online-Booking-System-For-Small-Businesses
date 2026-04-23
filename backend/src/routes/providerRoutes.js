@@ -16,7 +16,7 @@ const router = express.Router();
 router.get("/", getProviders);
 
 router.post("/", protect, isProvider, createProvider);
-// router.get("/me", protect, isProvider, getMyProvider);
+router.get("/me", protect, isProvider, getMyProvider);
 router.get("/:id", getProviderById);
 router.patch('/:id/status', protect, isProvider, updateAppointmentStatus);
 router.patch("/profile", protect, isProvider, updateProviderProfile);

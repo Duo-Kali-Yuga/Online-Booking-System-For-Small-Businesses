@@ -211,16 +211,22 @@ export const updateProviderProfile = async (req, res) => {
   try {
     const updateData = { ...req.body };
     
-    // If a file was uploaded, set the avatar path to the local URL
-    if (req.file) {
-      updateData.avatar = `/uploads/avatars/${req.file.filename}`;
-    }
+    // We remove the req.file / avatar logic here because 
+    // the frontend is sending the file to the User controller instead.
 
     const provider = await Provider.findOneAndUpdate(
       { user: req.user._id },
       updateData,
-      { new: true }
+      { 
+        // FIX: The Mongoose Deprecation Warning
+        returnDocument: 'after', 
+        runValidators: true 
+      }
     );
+    
+    if (!provider) {
+      return res.status(404).json({ message: "Provider profile not found." });
+    }
     
     res.json({ success: true, data: provider });
   } catch (error) {

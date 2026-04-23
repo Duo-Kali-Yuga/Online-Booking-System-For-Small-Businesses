@@ -15,6 +15,8 @@ const SetupProviderProfile = () => {
     }
   });
 
+  const industries = ['healthcare', 'beauty', 'education', 'consulting', 'fitness', 'other'];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -54,11 +56,16 @@ const SetupProviderProfile = () => {
               className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
               onChange={(e) => setFormData({...formData, industry: e.target.value})}
             >
-              <option value="other">Other</option>
+              {
+                industries.map((industry, index) => (
+                  <option key={index} value={industry}>{industry}</option>
+                ))
+              }
+              {/* <option value="other">Other</option>
               <option value="doctor">Doctor</option>
               <option value="barber">Barber</option>
               <option value="salon">Salon</option>
-              <option value="consultant">Consultant</option>
+              <option value="consultant">Consultant</option> */}
             </select>
           </div>
 

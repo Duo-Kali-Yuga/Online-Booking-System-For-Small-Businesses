@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { FiCamera, FiMapPin, FiBriefcase, FiPhone, FiAlignLeft } from 'react-icons/fi';
+import { FiCamera, FiMapPin, FiBriefcase, FiPhone, FiAlignLeft, FiAlertTriangle } from 'react-icons/fi';
 
 
 const EditProviderProfile = () => {
@@ -12,28 +12,45 @@ const EditProviderProfile = () => {
     avatar: '',
     phone: ''
   });
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  
+  // --- MISSING STATES ADDED HERE ---
+  const [providerName, setProviderName] = useState('');
+  const [settings, setSettings] = useState(null);
+
+
   const industries = ['healthcare', 'beauty', 'education', 'consulting', 'fitness', 'other'];
 
-
-  const [avatarFile, setAvatarFile] = useState(null); // Holds the actual File object
-  const [previewUrl, setPreviewUrl] = useState(null);
   
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const res = await api.get('/providers/me'); // Create this route to get own profile
-        const p = res.data.data;
+        const res = await api.get('/providers/me');
+        const p = res.data.data || res.data; 
+
         setFormData({
           businessName: p.businessName || '',
           bio: p.bio || '',
           location: p.location || '',
           avatar: p.avatar || '',
-          phone: p.phone || ''
+          phone: p.phone || '',
+          industry: p.industry || 'other'
         });
+
+        // These now have corresponding states to update!
+        if (p.user) {
+          setProviderName(p.user.name || ''); 
+        }
+        if (p.settings) {
+          setSettings(p.settings);
+        }
+
       } catch (err) {
-        console.error("Failed to load profile");
+        console.error("Failed to load profile", err);
       } finally {
         setLoading(false);
       }
@@ -109,33 +126,66 @@ const EditProviderProfile = () => {
   //   }
   // };
 
+  // const handleSaveAll = async (e) => {
+  //   e.preventDefault();
+  //   setSaving(true);
+
+  //   // 1. Prepare User Data (Identity)
+  //   const userData = new FormData();
+  //   userData.append('name', providerName); // The personal name of the user
+  //   if (avatarFile) userData.append('avatar', avatarFile);
+
+  //   // 2. Prepare Provider Data (Business)
+  //   const businessData = {
+  //     businessName: formData.businessName,
+  //     bio: formData.bio,
+  //     industry: formData.industry,
+  //     settings: settings // The hours/buffer we built earlier
+  //   };
+
+  //   try {
+  //     // Hit both endpoints simultaneously
+  //     await Promise.all([
+  //       api.patch('/users/me', userData), 
+  //       api.patch('/providers/profile', businessData)
+  //     ]);
+      
+  //     alert("Professional profile and identity updated!");
+  //   } catch (err) {
+  //     alert("Error saving some data.");
+  //   } finally {
+  //     setSaving(false);
+  //   }
+  // };
+
   const handleSaveAll = async (e) => {
     e.preventDefault();
     setSaving(true);
 
-    // 1. Prepare User Data (Identity)
     const userData = new FormData();
-    userData.append('name', providerName); // The personal name of the user
+    userData.append('name', providerName);
+    // Only append if there is a new file to upload
     if (avatarFile) userData.append('avatar', avatarFile);
 
-    // 2. Prepare Provider Data (Business)
     const businessData = {
       businessName: formData.businessName,
       bio: formData.bio,
       industry: formData.industry,
-      settings: settings // The hours/buffer we built earlier
+      location: formData.location, // Ensure the object we fixed earlier is included
+      settings: settings 
     };
 
     try {
-      // Hit both endpoints simultaneously
-      await Promise.all([
-        api.patch('/users/me', userData), 
-        api.patch('/providers/profile', businessData)
-      ]);
+      // 1. Update User Identity
+      const userRes = await api.patch('/users/me', userData);
+      
+      // 2. Update Provider Business Info
+      const providerRes = await api.patch('/providers/profile', businessData);
       
       alert("Professional profile and identity updated!");
     } catch (err) {
-      alert("Error saving some data.");
+      console.error("Save Error Details:", err.response?.data);
+      alert(err.response?.data?.message || "Error saving some data.");
     } finally {
       setSaving(false);
     }
@@ -170,8 +220,14 @@ const EditProviderProfile = () => {
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-center">
           <div className="relative mb-4">
             <img 
-              src={formData.avatar || `https://ui-avatars.com/api/?name=${formData.businessName}`} 
-              className="w-32 h-32 rounded-3xl object-cover border-4 border-slate-50"
+              src={
+                  previewUrl || 
+                  (formData.avatar ? `http://localhost:5000${formData.avatar}` : null) || 
+                  `https://ui-avatars.com/api/?name=${formData.businessName || 'User'}`
+                } 
+                className="w-32 h-32 rounded-3xl object-cover bg-slate-100" 
+                alt="Profile"
+                className="w-32 h-32 rounded-3xl object-cover border-4 border-slate-50"
               alt="Preview"
             />
             <div className="absolute -bottom-2 -right-2 bg-blue-600 p-2 rounded-xl text-white shadow-lg">
@@ -202,7 +258,14 @@ const EditProviderProfile = () => {
         <div className="flex flex-col items-center gap-2">
           <div className="relative">
             <img 
-              src={previewUrl || (formData.user.avatar ? `http://localhost:5000${formData.user.avatar}` : "")} 
+              src={
+                  previewUrl || 
+                  (formData.avatar ? `http://localhost:5000${formData.avatar}` : null) || 
+                  `https://ui-avatars.com/api/?name=${formData.businessName || 'User'}`
+                } 
+                className="w-32 h-32 rounded-3xl object-cover bg-slate-100" 
+                alt="Profile"
+                className="w-32 h-32 rounded-3xl object-cover"
               className="w-32 h-32 rounded-3xl object-cover" 
             />
             <label className="absolute bottom-0 right-0 cursor-pointer bg-blue-600 p-2 rounded-xl">
@@ -216,7 +279,7 @@ const EditProviderProfile = () => {
             </label>
           </div>
 
-          {(formData.user.avatar || previewUrl) && (
+          {(formData.avatar || previewUrl) && (
             <button 
               type="button"
               onClick={handleRemovePhoto}
@@ -253,17 +316,55 @@ const EditProviderProfile = () => {
             </select>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Address Input */}
             <div>
               <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
-                <FiMapPin /> Location
+                <FiMapPin /> Street Address
               </label>
               <input 
                 type="text" 
                 className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500"
-                value={formData.location}
-                onChange={(e) => setFormData({...formData, location: e.target.value})}
+                value={formData.location.address}
+                onChange={(e) => setFormData({
+                  ...formData, 
+                  location: { ...formData.location, address: e.target.value }
+                })}
               />
             </div>
+
+            {/* City Input */}
+            <div>
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+                City
+              </label>
+              <input 
+                type="text" 
+                className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500"
+                value={formData.location.city}
+                onChange={(e) => setFormData({
+                  ...formData, 
+                  location: { ...formData.location, city: e.target.value }
+                })}
+              />
+            </div>
+
+            {/* Country Input */}
+            <div>
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+                Country
+              </label>
+              <input 
+                type="text" 
+                className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500"
+                value={formData.location.country}
+                onChange={(e) => setFormData({
+                  ...formData, 
+                  location: { ...formData.location, country: e.target.value }
+                })}
+              />
+            </div>
+          </div>
             <div>
               <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
                 <FiPhone /> Contact Phone

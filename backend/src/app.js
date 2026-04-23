@@ -12,6 +12,8 @@ import { errorHandler } from "./middlewares/errorMiddleware.js";
 import { logger } from "./middlewares/logger.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+
 
 
 
@@ -21,7 +23,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(logger);
-
+app.use('/uploads', express.static('uploads'));
 
 // API
 app.use("/api/auth", authRoutes);
@@ -32,6 +34,7 @@ app.use("/api/slots", slotRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/users", userRoutes);
 
 //General Error Handler
 app.use(errorHandler);
