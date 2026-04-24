@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* --- Color Palette (Brand) --- */
+  --brand-primary: #6366f1;       /* Indigo 500 */
+  --brand-primary-hover: #4f46e5; /* Indigo 600 */
+  --brand-light: #eef2ff;         /* Indigo 50 */
+  
+  /* --- Semantic Colors --- */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+
+  /* --- Surface & Backgrounds --- */
+  --bg-main: #f8fafc;             /* Slate 50 - Very light page background */
+  --bg-card: #ffffff;             /* Pure white for cards */
+  --bg-sidebar: #f1f5f9;          /* Slate 100 - Distinct sidebar color */
+  
+  /* --- Borders & Lines --- */
+  --border-light: #e2e8f0;        /* Slate 200 */
+  --border-focus: #6366f1;        /* Matches brand primary */
+  
+  /* --- Glassmorphism & Transparency --- */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --overlay-bg: rgba(15, 23, 42, 0.5); /* Slate 900 at 50% for modals */
+
+  /* --- Border Radius (The "Roundness") --- */
+  --radius-sm: 0.5rem;   /* Buttons/Inputs */
+  --radius-md: 0.75rem;  /* Small cards */
+  --radius-lg: 1.25rem;  /* Standard containers */
+  --radius-xl: 2.25rem;  /* Large Dashboard sections */
+  --radius-full: 9999px; /* Rounded pills */
+
+  /* --- Spacing & Sizes --- */
+  --nav-height: 72px;
+  --sidebar-width: 260px;
+  --container-max: 1280px;
+
+  /* --- Shadows (Depth) --- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-main);
+    color: #0f172a; /* Slate 900 */
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply antialiased;
+  }
+
+  a, button {
+    @apply transition-all duration-200 ease-in-out;
+  }
+}
