@@ -6,9 +6,8 @@ import {
   rescheduleSchema
 } from "../validators/appointmentValidator.js";
 import { validate } from "../middlewares/validate.js";
-import { getProviderAppointments, getClientAppointments } from "../controllers/appointmentController.js";
+import { getProviderAppointments, getClientAppointments, deleteAppointment, updateAppointmentStatus } from "../controllers/appointmentController.js";
 import { protect, isProvider } from "../middlewares/authMiddleware.js";
-
 
 
 const router = express.Router();
@@ -22,8 +21,10 @@ router.patch(
   validate(rescheduleSchema),
   rescheduleAppointment
 );
+router.patch("/:id/status", protect, isProvider,updateAppointmentStatus);
 router.get("/provider-bookings", protect, isProvider, getProviderAppointments);
 router.get("/my-bookings", protect, getClientAppointments);
+router.delete("/:id", protect, deleteAppointment);
 
 
 

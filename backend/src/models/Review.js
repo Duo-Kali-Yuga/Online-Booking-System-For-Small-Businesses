@@ -25,6 +25,13 @@ const reviewSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Appointment",
     },
+    response: {
+      type: String,
+      default: ""
+    },
+    respondedAt: {
+      type: Date
+    }
   },
   { timestamps: true }
 );

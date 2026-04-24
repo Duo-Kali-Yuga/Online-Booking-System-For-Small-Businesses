@@ -19,7 +19,7 @@ import AvailabilityManager from './pages/provider/components/AvailabilityManager
 import ProviderBookings from './pages/provider/ProviderBookings';
 import EditProviderProfile from './pages/provider/EditProviderProfile';
 import Settings from './components/Settings';
-
+import ManageReviews from './pages/provider/components/ManageReview';
 
 
 
@@ -72,6 +72,8 @@ function App() {
           <Route path="/provider/bookings" element={<ProviderBookings />} /> {/* /provider/bookings */}
 
           <Route path="/provider/services" element={<ProviderServices />} />
+
+          <Route path="/provider/reviews" element={<ManageReviews />} />
 
           {/* --- Admin Routes --- */}
           <Route path="/admin" element={

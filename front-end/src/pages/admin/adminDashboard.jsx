@@ -1,158 +1,173 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { FiShield, FiAlertCircle, FiCheckCircle, FiTrash2, FiSearch } from 'react-icons/fi';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiUsers, FiBriefcase, FiCalendar, FiTrash2, FiPower, FiShield } from 'react-icons/fi';
+
+
+
+const StatCard = ({ title, value, icon: Icon, color }) => (
+  <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5">
+    <div className={`p-4 rounded-2xl ${color}`}><Icon size={24} /></div>
+    <div>
+      <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{title}</p>
+      <p className="text-3xl font-black text-slate-900">{value}</p>
+    </div>
+  </div>
+);
+
+
 
 const AdminDashboard = () => {
-  const [users, setUsers] = useState([]);
-  const [providers, setProviders] = useState([]);
+  const [view, setView] = useState('users'); // 'users', 'providers', 'appointments'
+  const [data, setData] = useState([]);
+  const [stats, setStats] = useState({ userCount: 0, providerCount: 0, appointmentCount: 0 });
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    fetchAdminData();
-  }, []);
 
-  const fetchAdminData = async () => {
-    try {
-      const [uRes, pRes] = await [
-        api.get('/api/admin/users'), 
-        api.get('/api/admin/providers')
-      ];
-      setUsers(uRes.data);
-      setProviders(pRes.data);
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
+  const fetchStats = async () => {
+    const res = await api.get('/admin/stats'); // Add this route to your backend
+    setStats(res.data.data);
   };
 
-  const handleDeleteUser = async (userId, userName) => {
-    // Always confirm before destructive actions
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${userName}? This will permanently remove all their appointments, reviews, and profile data.`
-    );
+  const fetchCurrentView = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/admin/${view}`);
+      setData(res.data.data);
+    } catch (err) { console.error(err); }
+    setLoading(false);
+  };
 
-    if (confirmed) {
-      try {
-        await api.delete(`/api/admin/users/${userId}`);
-        // Filter out the deleted user from the local state to update UI instantly
-        setUsers(prevUsers => prevUsers.filter(u => u._id !== userId));
-        alert("User purged successfully.");
-      } catch (err) {
-        alert("Error deleting user: " + (err.response?.data?.message || "Server Error"));
+  const handleToggleStatus = async (id) => {
+    try {
+      await api.patch(`/admin/providers/${id}/toggle`);
+      fetchCurrentView();
+    } catch (err) { alert("Toggle failed"); }
+  };
+
+  const handleDelete = async (id, item) => {
+    const typeLabel = view === 'appointments' ? 'appointment' : 'user/provider';
+    if (!window.confirm(`Danger: This will delete this ${typeLabel} and associated data. Proceed?`)) return;
+
+    try {
+      if (view === 'appointments') {
+        // Direct appointment deletion
+        await api.delete(`/admin/appointments/${id}`);
+      } else if (view === 'providers') {
+        // Providers are linked to a User, so we delete the associated User ID
+        // item.user is the ID of the account in the User collection
+        await api.delete(`/admin/users/${item.user}`);
+      } else {
+        // Standard user deletion
+        await api.delete(`/admin/users/${id}`);
       }
+      
+      fetchCurrentView();
+      fetchStats();
+    } catch (err) {
+      alert("Deletion failed: " + (err.response?.data?.message || err.message));
     }
   };
 
-  const filteredUsers = users.filter(user => 
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    fetchStats();
+    fetchCurrentView();
+  }, [view]);
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-10">
-      <header className="flex items-center gap-4">
-        <div className="bg-red-100 p-3 rounded-2xl">
-          <FiShield className="text-3xl text-red-600" />
-        </div>
+    <div className="max-w-7xl mx-auto p-6 space-y-8">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Admin Console</h1>
-          <p className="text-slate-500">System-wide management and security.</p>
+          <h1 className="text-4xl font-black text-slate-900 flex items-center gap-3">
+            <FiShield className="text-red-500" /> System Control
+          </h1>
+          <p className="text-slate-500 font-medium">Global management and service oversight.</p>
+        </div>
+        
+        <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
+          {['users', 'providers', 'appointments'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setView(tab)}
+              className={`px-6 py-2 rounded-xl text-sm font-bold capitalize transition ${
+                view === tab ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* User Management Section */}
-        <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-            <h2 className="font-bold text-lg">Platform Users</h2>
-            <span className="text-xs font-bold bg-slate-100 px-2 py-1 rounded">{users.length} Total</span>
-            {/* 2. Search Bar Implementation */}
-            <div className="relative w-full md:w-72">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input 
-                type="text"
-                placeholder="Search by name or email..."
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 transition"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="divide-y divide-slate-50 max-h-[500px] overflow-y-auto">
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map(user => (
-                <div key={user._id} className="p-4 flex justify-between items-center hover:bg-slate-50 transition">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                      user.role === 'admin' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
-                    }`}>
-                      {user.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-bold text-slate-800">{user.name}</p>
-                      <p className="text-xs text-slate-400">{user.email} • <span className="capitalize">{user.role}</span></p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => handleDeleteUser(user._id, user.name)}
-                    className="p-2 text-slate-300 hover:text-red-500 transition-colors"
-                  >
-                    <FiTrash2 />
-                  </button>
-                </div>
-              ))
-            ) : (
-              <div className="p-10 text-center text-slate-400 italic">
-                No users found matching "{searchTerm}"
-              </div>
-            )}
-          </div>
-          <div className="divide-y divide-slate-50 max-h-[400px] overflow-y-auto">
-            {users.map(user => (
-              <div key={user._id} className="p-4 flex justify-between items-center hover:bg-slate-50">
-                <div>
-                  <p className="font-bold text-slate-800">{user.name}</p>
-                  <p className="text-xs text-slate-400">{user.email} • <span className="capitalize">{user.role}</span></p>
-                </div>
-                <button 
-                  onClick={() => handleDeleteUser(user._id, user.name)}
-                  className="p-2 text-slate-400 hover:text-red-600 transition-colors"
-                  title="Delete User"
-                >
-                  <FiTrash2 />
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatCard title="Total Clients" value={stats.userCount} icon={FiUsers} color="bg-blue-50 text-blue-600" />
+        <StatCard title="Total Businesses" value={stats.providerCount} icon={FiBriefcase} color="bg-purple-50 text-purple-600" />
+        <StatCard title="Platform Bookings" value={stats.appointmentCount} icon={FiCalendar} color="bg-orange-50 text-orange-600" />
+      </div>
 
-        {/* Provider Verification Section */}
-        <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-            <h2 className="font-bold text-lg">Business Verification</h2>
-          </div>
-          <div className="p-6">
-            {providers.filter(p => !p.isVerified).map(p => (
-              <div key={p._id} className="bg-orange-50 border border-orange-100 p-4 rounded-2xl mb-4 flex justify-between items-center">
-                <div>
-                  <p className="font-bold text-orange-800">{p.businessName}</p>
-                  <p className="text-xs text-orange-600">{p.industry}</p>
-                </div>
-                <button className="bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-bold">
-                  Verify Business
-                </button>
-              </div>
-            ))}
-            {providers.every(p => p.isVerified) && (
-              <div className="text-center py-10">
-                <FiCheckCircle className="mx-auto text-4xl text-green-200 mb-2" />
-                <p className="text-slate-400 text-sm">All businesses are currently verified.</p>
-              </div>
-            )}
-          </div>
-        </section>
+      {/* Data Table */}
+      <div className="bg-white border border-slate-100 rounded-3xl shadow-xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 text-slate-400 text-xs uppercase tracking-widest font-black">
+              <tr>
+                <th className="px-8 py-5">Entity Name</th>
+                <th className="px-8 py-5">Sub-Details</th>
+                <th className="px-8 py-5">Status</th>
+                <th className="px-8 py-5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              <AnimatePresence mode='wait'>
+                {data.map((item) => (
+                  <motion.tr 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    key={item._id} 
+                    className="hover:bg-slate-50/50 transition-colors"
+                  >
+                    <td className="px-8 py-5">
+                      <p className="font-bold text-slate-800">{item.name || item.businessName || item.client?.name}</p>
+                      <p className="text-xs text-slate-400">{item.email || item.category || 'System Record'}</p>
+                    </td>
+                    <td className="px-8 py-5 text-sm text-slate-600">
+                      {view === 'appointments' ? item.service?.name : (item.role || 'Provider')}
+                    </td>
+                    <td className="px-8 py-5">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${
+                        (item.active || item.status === 'confirmed') ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
+                      }`}>
+                        {item.status || (item.active ? 'Active' : 'Disabled')}
+                      </span>
+                    </td>
+                    <td className="px-8 py-5 text-right space-x-2">
+                      {view === 'providers' && (
+                        <button 
+                          onClick={() => handleToggleStatus(item._id)}
+                          className={`p-2 rounded-lg transition-colors ${item.active ? 'text-green-500 bg-green-50' : 'text-slate-400 bg-slate-100'}`}
+                        >
+                          <FiPower size={18} />
+                        </button>
+                      )}
+                      <button 
+                        onClick={() => handleDelete(item._id, item)} // Pass 'item' here
+                        className="p-2 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <FiTrash2 size={18} />
+                      </button>
+                    </td>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 };
 
-export default AdminDashboard
+
+
+export default AdminDashboard;

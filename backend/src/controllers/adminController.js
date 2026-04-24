@@ -30,40 +30,59 @@ export const getAllAppointments = async (req, res) => {
   res.json({ success: true, data: appointments });
 };
 
+
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    // 1. Find the user first
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // 2. If the user is a provider, clean up their business data
     if (user.role === 'provider') {
-      await Provider.findOneAndDelete({ user: id });
-      // Delete all appointments associated with this business
-      await Appointment.deleteMany({ provider: id });
+      // 1. Find the actual Provider profile first
+      const providerProfile = await Provider.findOne({ user: id });
+      
+      if (providerProfile) {
+        // 2. Delete appointments using the PROVIDER ID, not the USER ID
+        await Appointment.deleteMany({ provider: providerProfile._id });
+        await Provider.findByIdAndDelete(providerProfile._id);
+      }
     }
 
-    // 3. If the user is a client, clean up their bookings and reviews
     if (user.role === 'client') {
       await Appointment.deleteMany({ client: id });
       await Review.deleteMany({ client: id });
     }
 
-    // 4. Finally, delete the core User account
     await User.findByIdAndDelete(id);
 
-    res.json({ 
-      success: true, 
-      message: `User ${user.name} and all associated data have been purged.` 
-    });
+    return res.json({ success: true, message: "User and all data purged." });
   } catch (error) {
-    res.status(500).json({ 
-      success: false, 
-      message: "Server error during cascading deletion" 
-    });
+    console.error("Delete Error:", error);
+    return res.status(500).json({ success: false, message: error.message });
   }
+};
+
+export const deleteAppointment = async (req, res) => {
+  try {
+    await Appointment.findByIdAndDelete(req.params.id);
+    return res.json({ success: true, message: "Appointment deleted" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getAdminStats = async (req, res) => {
+  const [userCount, providerCount, appointmentCount] = await Promise.all([
+    User.countDocuments({ role: 'client' }),
+    Provider.countDocuments(),
+    Appointment.countDocuments()
+  ]);
+  
+  res.json({ 
+    success: true, 
+    data: { userCount, providerCount, appointmentCount } 
+  });
 };

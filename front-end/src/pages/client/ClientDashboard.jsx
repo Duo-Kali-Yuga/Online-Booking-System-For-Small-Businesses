@@ -68,7 +68,7 @@ const ClientDashboard = () => {
         </div>
         <div>
         <img 
-          src={appt.provider.avatar ? `${API_BASE}${appt.provider.avatar}` : ""} 
+          src={appt.provider.avatar ? `${API_BASE}${appt.provider.avatar}` : `${API_BASE}${appt.provider.avatar}`} 
           className="w-32 h-32 rounded-3xl object-cover"
         />
           <h4 className="font-bold text-slate-800">{appt.provider?.businessName}</h4>
@@ -85,15 +85,15 @@ const ClientDashboard = () => {
         </span>
 
         {/* Action: Review */}
-        {isPast && appt.status === 'confirmed' && !appt.isReviewed && (
+        {!isPast && appt.status === 'confirmed' && !appt.isReviewed && (
           <button 
             onClick={() => handleOpenReview(appt)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold"
+            className="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold "
           >
             Leave a Review
           </button>
         )}
-                
+
         {/* Action: Cancel (Now connected to handleCancel) */}
         {!isPast && appt.status === 'confirmed' && (
           <button 
@@ -144,15 +144,15 @@ const ClientDashboard = () => {
           <h2 className="text-lg font-bold text-slate-400 uppercase tracking-widest mb-4">Past & Cancelled</h2>
           <div className="opacity-75"> {/* Slightly fade out history for visual hierarchy */}
             {pastOrCancelled.length > 0 ? (
-              pastOrCancelled.map(a => <AppointmentCard key={a._id} appt={a} isPast={true} />)
+              pastOrCancelled.map(a => <AppointmentCard key={a._id} appt={a} isPast={false} />)
             ) : (
               <p className="text-slate-400 italic">History is empty.</p>
             )}
           </div>
         </section>
       </div>
-
-      {/* {loading ? (
+{/* 
+      {loading ? (
         <div className="text-center py-10">Loading your schedule...</div>
       ) : (
         <div className="space-y-4">

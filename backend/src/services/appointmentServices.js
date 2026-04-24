@@ -10,8 +10,45 @@ import dayjs from "dayjs"
 
 
 export const createAppointment = async (
-  userId,
+  userId, 
   { providerId, serviceId, date, startTime }
+) => {
+  const service = await Service.findById(serviceId);
+  if (!service) throw new Error("Service not found");
+
+  // Calculate End Time
+  const duration = service.duration;
+  const [h, m] = startTime.split(":").map(Number);
+  const startMinutes = h * 60 + m;
+  const endMinutes = startMinutes + duration;
+  const endTime = `${String(Math.floor(endMinutes / 60)).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
+
+  // Validate Slot Availability
+  const slots = await getAvailableSlots(providerId, date, duration);
+  const isValid = slots.some((s) => s.start === startTime);
+  if (!isValid) throw new Error("Slot no longer available");
+
+  // Create the appointment
+  // userId here is guaranteed to be the Client's ID 
+  // because of the logic we fixed in the Controller above
+  const appointment = await Appointment.create({
+    client: userId,
+    provider: providerId,
+    service: serviceId,
+    date: dayjs(date).startOf('day').toDate(),
+    startTime,
+    endTime,
+    status: "pending", // Or "confirmed" depending on your business logic
+  });
+
+  return appointment;
+};
+
+
+
+export const createAppointment2 = async (
+  userId,
+  { providerId, serviceId, date, startTime, client }
 ) => {
   // const session = await mongoose.startSession();
 
@@ -40,15 +77,35 @@ export const createAppointment = async (
     const isValid = slots.some((s) => s.start === startTime);
     if (!isValid) throw new Error("Slot no longer available");
 
-    const appointment = await Appointment.create({
-      client: userId,
-      provider: providerId,
-      service: serviceId,
-      date: dayjs(date).startOf('day').toDate(),
-      startTime,
-      endTime,
-      status: "confirmed",
-    });
+    const providerCheck = await Appointment.findById(userId);
+
+    console.log("Provider:...:", providerCheck)
+
+    let appointment = null
+
+    console.log("Client", client)
+
+    if(!userId) {
+      appointment = await Appointment.create({
+        client: client._id,
+        provider: providerId,
+        service: serviceId,
+        date: dayjs(date).startOf('day').toDate(),
+        startTime,
+        endTime,
+        status: "pending",
+      });
+    } else {
+      appointment = await Appointment.create({
+        client: userId,
+        provider: providerId,
+        service: serviceId,
+        date: dayjs(date).startOf('day').toDate(),
+        startTime,
+        endTime,
+        status: "pending",
+      });
+    }
 
     // const appointment = await Appointment.create(
     //   [
@@ -65,7 +122,7 @@ export const createAppointment = async (
     //   // { session }
     // );
 
-    const client = await User.findById(userId);
+    // const client = await User.findById(userId);
 
     // await sendEmail({
     //   to: client.email,
@@ -164,3 +221,4 @@ export const cancelAppointment = async (userId, appointmentId) => {
   
   return appointment;
 };
+

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { motion } from 'framer-motion';
-import { FiUsers, FiDollarSign, FiCalendar, FiSettings } from 'react-icons/fi';
+import { FiUsers, FiDollarSign, FiCalendar, FiSettings, FiTrash2 } from 'react-icons/fi';
 import dayjs from 'dayjs';
 import { useNavigate, Link } from 'react-router-dom';
 import DashboardStats from './components/DashboardStats';
@@ -51,7 +51,7 @@ const ProviderDashboard = () => {
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      await api.patch(`/api/appointments/${id}/status`, { status: newStatus });
+      await api.patch(`/appointments/${id}/status`, { status: newStatus });
       fetchDashboardData(); // Refresh analytics and list
     } catch (err) {
       alert("Update failed");
@@ -90,6 +90,17 @@ const ProviderDashboard = () => {
     };
     loadDashboard();
   }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to remove this appointment from your records?")) return;
+    
+    try {
+      await api.delete(`/appointments/${id}`); // Ensure this route exists in your backend
+      fetchDashboardData(); // Refresh the list and stats
+    } catch (err) {
+      alert(err.response?.data?.message || "Delete failed");
+    }
+  };
 
 
 
@@ -186,11 +197,22 @@ const ProviderDashboard = () => {
                         )}
                         
                         <button 
-                          onClick={() => navigate(`/booking/${appt.provider._id}`)} // Reschedule logic
+                          onClick={() => navigate(`/booking/${appt.provider}`)}
                           className="border border-slate-200 text-slate-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-slate-50"
                         >
                           Reschedule
                         </button>
+
+                        {/* NEW: Delete Button for Confirmed or Cancelled */}
+                        {(appt.status === 'confirmed' || appt.status === 'cancelled') && (
+                          <button 
+                            onClick={() => handleDelete(appt._id)}
+                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete Record"
+                          >
+                            <FiTrash2 size={16} />
+                          </button>
+                        )}
                       </td>
                   </tr>
                 ))}

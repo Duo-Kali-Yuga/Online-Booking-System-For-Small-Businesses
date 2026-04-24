@@ -3,8 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../api/axios';
 import dayjs from 'dayjs';
 import ProviderHeaderStart from '../../components/ProviderHeaderStart';
-
-
+import ReviewList from '../../components/ReviewList';
 
 
 
@@ -123,6 +122,26 @@ const BookingPage = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <ProviderHeaderStart provider={provider}/>
+
+      {/* Existing Header Layout */}
+      <div className="flex flex-col md:flex-row gap-8 mb-12 items-start">
+        <img 
+          src={provider.avatar ? `${API_BASE}${provider.avatar}` : ""} 
+          className="w-32 h-32 rounded-3xl object-cover shadow-lg"
+        />
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold text-slate-800">{provider.businessName}</h1>
+          <p className="text-slate-500 mb-2">📍 {provider.location?.city}, {provider.location?.country}</p>
+          
+          {/* Show Average Rating here using your provider ratingStats */}
+          <div className="flex items-center gap-2 mb-4">
+             <span className="text-yellow-400 font-bold text-lg">★ {provider.ratingStats?.averageRating || 0}</span>
+             <span className="text-slate-400 text-sm">({provider.ratingStats?.totalReviews || 0} reviews)</span>
+          </div>
+
+          <p className="text-slate-600 leading-relaxed max-w-xl">{provider.bio}</p>
+        </div>
+      </div>
       <img 
         src={provider.avatar ? `${API_BASE}${provider.avatar}` : ""} 
         className="w-32 h-32 rounded-3xl object-cover"
@@ -132,9 +151,9 @@ const BookingPage = () => {
         <p className="text-slate-500">📍 {provider.location?.city}</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Step 1: Select Service */}
-        <section>
+        <section className="lg:col-span-2 space-y-10">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <span className="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
             Select Service
@@ -197,6 +216,14 @@ const BookingPage = () => {
               No slots available for this day.
             </div>
           )}
+
+          {/* Sidebar: Reviews Column */}
+          <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 h-fit">
+            <ReviewList providerId={providerId} provider = {provider}/>
+          </div>
+          {/* <aside className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 h-fit">
+            <ReviewList providerId={providerId} provider = {provider}/>
+          </aside> */}
         </section>
       </div>
     </div>

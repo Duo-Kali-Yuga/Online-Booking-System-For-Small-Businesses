@@ -1,76 +1,7 @@
 import Review from "../models/Review.js";
 import Appointment from "../models/Appointment.js";
+import Provider from "../models/Provider.js";
 
-// export const createReview = async (req, res) => {
-//   const { providerId, rating, comment, appointmentId } = req.body;
-
-//   // 🔒 ensure appointment belongs to user
-//   const appointment = await Appointment.findOne({
-//     _id: appointmentId,
-//     client: req.user.id,
-//     status: "confirmed",
-//   });
-
-//   if (!appointment) {
-//     return res.status(400).json({
-//       success: false,
-//       message: "You can only review completed appointments",
-//     });
-//   }
-
-//   const existing = await Review.findOne({ appointment: appointmentId });
-
-//   if (existing) {
-//     return res.status(400).json({
-//       success: false,
-//       message: "Already reviewed",
-//     });
-//   }
-
-//   const review = await Review.create({
-//     client: req.user.id,
-//     provider: providerId,
-//     rating,
-//     comment,
-//     appointment: appointmentId,
-//   });
-
-//   res.json({ success: true, data: review });
-// };
-
-// export const createReview = async (req, res) => {
-//   const { providerId, rating, comment, appointmentId } = req.body;
-
-//   // 1. Authorization & Validity Check
-//   const appointment = await Appointment.findOne({
-//     _id: appointmentId,
-//     client: req.user._id, // Use _id to match your JWT payload
-//   });
-
-//   if (!appointment) {
-//     return res.status(404).json({ message: "Appointment not found" });
-//   }
-
-//   // 2. Prevent Duplicate Reviews
-//   const existing = await Review.findOne({ appointment: appointmentId });
-//   if (existing) {
-//     return res.status(400).json({ message: "You have already reviewed this visit" });
-//   }
-
-//   // 3. Create Review
-//   const review = await Review.create({
-//     client: req.user._id,
-//     provider: providerId,
-//     appointment: appointmentId,
-//     rating,
-//     comment,
-//   });
-
-//   // 4. Optional: Update Appointment to hide the button on next fetch
-//   await Appointment.findByIdAndUpdate(appointmentId, { isReviewed: true });
-
-//   res.status(201).json({ success: true, data: review });
-// };
 
 export const createReview = async (req, res) => {
   const { providerId, rating, comment, appointmentId } = req.body;
@@ -111,6 +42,8 @@ export const getProviderReviews = async (req, res) => {
     provider: req.params.providerId,
   }).populate("client", "name");
 
+  console.log(reviews)
+
   res.json({ success: true, data: reviews });
 };
 
@@ -135,3 +68,42 @@ export const getProviderStats = async (providerId) => {
     ? { averageRating: stats[0].averageRating.toFixed(1), totalReviews: stats[0].totalReviews }
     : { averageRating: 0, totalReviews: 0 };
 };
+
+// backend/controllers/reviewController.js
+export const respondToReview = async (req, res) => {
+  const { reviewId } = req.params;
+  const { response } = req.body;
+
+  try {
+    const review = await Review.findById(reviewId);
+    
+    if (!review) return res.status(404).json({ message: "Review not found" });
+
+    // Ensure the person responding is the actual provider for this review
+    // This assumes req.user._id is the User ID linked to the Provider
+    review.response = response;
+    review.respondedAt = Date.now();
+    await review.save();
+
+    res.json({ success: true, data: review });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllReviewReceive = async (req, res) => {
+  try {
+    const provider = await Provider.findOne({ user: req.user._id });
+    if (!provider) return res.status(404).json({ message: "Provider profile not found" });
+
+    const reviews = await Review.find({ provider: provider._id })
+      .populate("client", "name")
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, data: reviews });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
