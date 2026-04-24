@@ -11,6 +11,7 @@ const ClientDiscovery = () => {
   const [city, setCity] = useState('');
 
 
+    const industries = ['healthcare', 'beauty', 'education', 'consulting', 'fitness', 'other'];
 
   // const fetchProviders = async () => {
   //   setLoading(true);
@@ -136,11 +137,13 @@ const ClientDiscovery = () => {
           value={industry}
           onChange={(e) => setIndustry(e.target.value)}
         >
-          <option value="">All Industries</option>
+          {/* <option value="">All Industries</option>
           <option value="barber">Barber</option>
           <option value="doctor">Doctor</option>
           <option value="salon">Salon</option>
-          <option value="consultant">Consultant</option>
+          <option value="consultant">Consultant</option> */}
+            <option value="">All Industries</option>
+            {industries.map((ind, index) => <option key={index} value={ind}>{ind}</option>)}
         </select>
         
         <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition"

@@ -1,3 +1,5 @@
+import User from '../models/User.js';
+
 // Inside updateMe in userController.js
 // export const updateMe = async (req, res) => {
 //   try {
@@ -46,32 +48,25 @@
 //   }
 // };
 
+
 export const updateMe = async (req, res) => {
   try {
-    // LOGGING: This will show in your terminal exactly what arrived
     console.log("Incoming Body:", req.body);
     console.log("Incoming File:", req.file);
 
-    // 1. Build the update object carefully
     const updateData = {};
-    
-    // Only update name if it was actually sent in the body
-    if (req.body.name) {
-      updateData.name = req.body.name;
-    }
+    if (req.body.name) updateData.name = req.body.name;
 
-    // 2. Handle the file upload path
     if (req.file) {
       updateData.avatar = `/uploads/avatars/${req.file.filename}`;
-    } 
+    }
 
-    // 3. Database operation
     const user = await User.findByIdAndUpdate(
       req.user._id,
       updateData,
       { 
         returnDocument: 'after',
-        runValidators: true // Ensures the new data follows your Schema rules
+        runValidators: true 
       }
     );
 
@@ -81,7 +76,6 @@ export const updateMe = async (req, res) => {
 
     res.json({ success: true, data: user });
   } catch (error) {
-    // This will print the EXACT reason for the 500 error in your console
     console.error("UpdateMe Error:", error);
     res.status(500).json({ success: false, message: error.message });
   }

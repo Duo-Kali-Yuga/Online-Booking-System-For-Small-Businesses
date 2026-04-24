@@ -67,7 +67,8 @@ const BookingPage = () => {
         params: { 
           providerId, 
           date: selectedDate, 
-          duration: selectedService.duration 
+          duration: selectedService.duration,
+          _t: Date.now()
         }
       });
 

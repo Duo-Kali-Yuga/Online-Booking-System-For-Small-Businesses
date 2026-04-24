@@ -23,16 +23,20 @@ const Navbar = () => {
 
         {/* Dynamic Links based on Role */}
         <div className="hidden md:flex items-center gap-8">
-          {user.role === 'client' && (
-            <>
-              <Link to="/app" className="flex items-center gap-2 text-slate-600 font-medium hover:text-blue-600">
-                <FiSearch /> Find Services
-              </Link>
-              <Link to="/dashboard" className="flex items-center gap-2 text-slate-600 font-medium hover:text-blue-600">
-                <FiGrid /> My Bookings
-              </Link>
-            </>
-          )}
+        {user.role === 'client' && (
+          <>
+            <Link to="/app" className="flex items-center gap-2 text-slate-600 font-medium hover:text-blue-600">
+              <FiSearch /> Find Services
+            </Link>
+            <Link to="/dashboard" className="flex items-center gap-2 text-slate-600 font-medium hover:text-blue-600">
+              <FiGrid /> My Bookings
+            </Link>
+            {/* ADD THIS FOR CLIENTS */}
+            <Link to="/settings" className="flex items-center gap-2 text-slate-600 font-medium hover:text-blue-600">
+              <FiUser /> Edit Profile
+            </Link>
+          </>
+        )}
 
           {user.role === 'provider' && (
             <>
@@ -67,11 +71,17 @@ const Navbar = () => {
           </div>
           
           <Link to={user.role === 'provider' ? "/provider/profile" : "/settings"}>
-            <img 
-              src={user.avatar ? `http://localhost:5000${user.avatar}` : `https://ui-avatars.com/api/?name=${user.name}&background=random`} 
-              alt="Profile"
-              className="w-10 h-10 rounded-xl object-cover border-2 border-slate-100 hover:border-blue-500 transition-all"
-            />
+          <img 
+            src={
+              user.avatar 
+                ? `http://localhost:5000${user.avatar}` 
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`
+            } 
+            alt="Profile"
+            className="w-10 h-10 rounded-xl object-cover border-2 border-slate-100 hover:border-blue-500 transition-all"
+            // Error fallback in case the local server is down or path is broken
+            onError={(e) => { e.target.src = `https://ui-avatars.com/api/?name=${user.name}`; }}
+          />
           </Link>
 
           <button 

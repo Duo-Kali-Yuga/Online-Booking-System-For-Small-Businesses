@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { FiCamera, FiMapPin, FiBriefcase, FiPhone, FiAlignLeft, FiAlertTriangle } from 'react-icons/fi';
+import { useAuth } from '../../context/AuthContext';
 
 
 const EditProviderProfile = () => {
@@ -21,6 +22,8 @@ const EditProviderProfile = () => {
   // --- MISSING STATES ADDED HERE ---
   const [providerName, setProviderName] = useState('');
   const [settings, setSettings] = useState(null);
+
+  const { updateUserData } = useAuth();
 
 
   const industries = ['healthcare', 'beauty', 'education', 'consulting', 'fitness', 'other'];
@@ -181,6 +184,13 @@ const EditProviderProfile = () => {
       
       // 2. Update Provider Business Info
       const providerRes = await api.patch('/providers/profile', businessData);
+
+    if (updateUserData) {
+      updateUserData({
+        name: providerName,
+        avatar: userRes.data.data.avatar // Use the path returned by the backend
+      });
+    }
       
       alert("Professional profile and identity updated!");
     } catch (err) {
@@ -312,7 +322,7 @@ const EditProviderProfile = () => {
               value={formData.industry}
               onChange={(e) => setFormData({...formData, industry: e.target.value})}
             >
-              {industries.map(ind => <option key={ind} value={ind}>{ind}</option>)}
+              {industries.map((ind, index) => <option key={index} value={ind}>{ind}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

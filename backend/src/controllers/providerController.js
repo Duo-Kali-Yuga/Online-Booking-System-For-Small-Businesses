@@ -49,11 +49,11 @@ export const getMyProvider = async (req, res) => {
 };
 
 export const getProviderById = async (req, res) => {
-  console.log("step 1")
+
   try {
     const provider = await Provider.findById(req.params.id).populate("user", "name email");
     if (!provider) return res.status(404).json({ message: "Not found" });
-    
+
     res.json({ success: true, data: provider });
   } catch (error) {
     res.status(500).json({ message: error.message });

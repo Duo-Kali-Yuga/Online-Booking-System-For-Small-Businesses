@@ -2,6 +2,7 @@ import { getAvailableSlots } from "../services/slotService.js";
 
 export const getSlots = async (req, res) => {
   try {
+    console.log( req.query)
     const { providerId, date, duration } = req.query;
 
     const slots = await getAvailableSlots(

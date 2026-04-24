@@ -18,6 +18,7 @@ import ProviderServices from './pages/provider/ProviderServices';
 import AvailabilityManager from './pages/provider/components/AvailabilityManager';
 import ProviderBookings from './pages/provider/ProviderBookings';
 import EditProviderProfile from './pages/provider/EditProviderProfile';
+import Settings from './components/Settings';
 
 
 
@@ -43,6 +44,11 @@ function App() {
           <Route path="/dashboard" element={
             <ProtectedRoute allowedRoles={['client']}>
               <ClientDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/settings" element={
+            <ProtectedRoute allowedRoles={['client']}>
+              <Settings />
             </ProtectedRoute>
           } />
           <Route path="/booking/:providerId" element={<BookingPage />} />

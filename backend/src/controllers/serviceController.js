@@ -1,6 +1,7 @@
 import * as serviceService from "../services/serviceService.js";
 import { successResponse } from "../utils/response.js";
 import Service from '../models/Service.js';
+import Provider from "../models/Provider.js";
 
 
 // export const createService = async (req, res) => {
@@ -40,8 +41,10 @@ import Service from '../models/Service.js';
 export const getMyServices = async (req, res) => {
   try {
     const { providerId } = req.params;
+  
+    const provider = await Provider.findById(providerId).populate("user");
 
-    const services = await Service.find({ provider: providerId });
+    const services = await Service.find({ provider: provider.user._id });
 
     res.json({ success: true, data: services });
 
