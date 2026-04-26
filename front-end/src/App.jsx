@@ -1,90 +1,113 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoutes';
-import Navbar from './components/Navbar';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoutes";
+import Navbar from "./layouts/Navbar";
+
+// Layouts (you can create these later if not yet)
+import PublicLayout from "./layouts/PublicLayout";
+import AppLayout from "./layouts/AppLayout";
 
 // Pages
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import SetupProviderProfile from './pages/provider/SetupProviderProfile';
-import ClientDiscovery from './pages/client/ClientDiscovery';
-import ClientDashboard from './pages/client/ClientDashboard';
-import ProviderDashboard from './pages/provider/ProviderDashboard';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import ProviderSetup from './pages/provider/ProviderSetup';
-import BookingPage from './pages/client/BookingPage';
-import ProviderServices from './pages/provider/ProviderServices';
-import AvailabilityManager from './pages/provider/components/AvailabilityManager';
-import ProviderBookings from './pages/provider/ProviderBookings';
-import EditProviderProfile from './pages/provider/EditProviderProfile';
-import Settings from './components/Settings';
-import ManageReviews from './pages/provider/components/ManageReview';
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
+// Client
+import ClientDiscovery from "./pages/client/ClientDiscovery";
+import ClientDashboard from "./pages/client/ClientDashboard";
+import BookingPage from "./pages/client/BookingPage";
 
+// Provider
+import SetupProviderProfile from "./pages/provider/SetupProviderProfile";
+import ProviderDashboard from "./pages/provider/ProviderDashboard";
+import ProviderSetup from "./pages/provider/ProviderSetup";
+import ProviderServices from "./pages/provider/ProviderServices";
+import ProviderBookings from "./pages/provider/ProviderBookings";
+import EditProviderProfile from "./pages/provider/EditProviderProfile";
+import AvailabilityManager from "./features/provider/components/AvailabilityManager";
+import ManageReviews from "./features/provider/components/ManageReview";
 
+// Admin
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
+// Shared
+import Settings from "./pages/Settings";
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <Navbar />
+
         <Routes>
-          {/* --- Public Routes --- */}
-          <Route path="/" element={<Landing />} />
+
+          {/* PUBLIC  */}
+          <Route
+            path="/" element={
+              <PublicLayout>
+                <Landing />
+              </PublicLayout>
+            }
+          />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* --- Client Routes --- */}
-          <Route path="/app" element={
-            <ProtectedRoute allowedRoles={['client']}>
-              <ClientDiscovery />
-            </ProtectedRoute>
-          } />
-          <Route path="/dashboard" element={
-            <ProtectedRoute allowedRoles={['client']}>
-              <ClientDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/settings" element={
-            <ProtectedRoute allowedRoles={['client']}>
-              <Settings />
-            </ProtectedRoute>
-          } />
-          <Route path="/booking/:providerId" element={<BookingPage />} />
+          {/*  CLIENT  */}
+          <Route
+            path="/client"
+            element={
+              <ProtectedRoute allowedRoles={["client"]}>
+                <AppLayout />
+              </ProtectedRoute>
+            }>
+            <Route index element={<ClientDiscovery />} />
+            <Route path="dashboard" element={<ClientDashboard />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="booking/:providerId" element={<BookingPage />} />
+          </Route>
 
-          {/* --- Provider Routes --- */}
-          <Route path="/book/:providerId" element={<BookingPage />} />
-          <Route path="/setup-profile" element={
-            <ProtectedRoute allowedRoles={['provider']}>
-              <SetupProviderProfile />
-            </ProtectedRoute>
-          } />
-          <Route path="/provider" element={
-            <ProtectedRoute allowedRoles={['provider']}>
-              <ProviderDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/provider/setup" element={<ProviderSetup />} />
-          <Route path="/provider/profile" element={<EditProviderProfile />} />
 
-          <Route path="/provider/availability" element={<AvailabilityManager />} /> {/* /provider/availability */}
-          <Route path="/provider/bookings" element={<ProviderBookings />} /> {/* /provider/bookings */}
+          {/*  PROVIDER  */}
+          <Route
+            path="/provider"
+            element={
+              <ProtectedRoute allowedRoles={["provider"]}>
+                <AppLayout>
+                  <Navbar />
+                  <ProviderDashboard />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<ProviderDashboard />} />
+            <Route path="setup" element={<ProviderSetup />} />
+            <Route path="profile" element={<EditProviderProfile />} />
+            <Route path="services" element={<ProviderServices />} />
+            <Route path="availability" element={<AvailabilityManager />} />
+            <Route path="bookings" element={<ProviderBookings />} />
+            <Route path="reviews" element={<ManageReviews />} />
+            <Route path="setup-profile" element={<SetupProviderProfile />} />
 
-          <Route path="/provider/services" element={<ProviderServices />} />
+          </Route>
 
-          <Route path="/provider/reviews" element={<ManageReviews />} />
 
-          {/* --- Admin Routes --- */}
-          <Route path="/admin" element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
+          {/*  ADMIN  */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AppLayout />
+              </ProtectedRoute>
+            }>
 
-          {/* --- Catch All --- */}
+            <Route index element={<AdminDashboard />} />
+          </Route>
+
+          {/*  FALLBACK  */}
           <Route path="*" element={<Navigate to="/" replace />} />
+
         </Routes>
+
       </AuthProvider>
     </Router>
   );

@@ -34,13 +34,13 @@ const Settings = () => {
   return (
     <div className="max-w-2xl mx-auto p-8">
       <h1 className="text-3xl font-black mb-8 text-slate-900">Account Settings</h1>
-      
+
       <form onSubmit={handleUpdate} className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm space-y-8">
         {/* Avatar Section */}
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
-            <img 
-              src={file ? URL.createObjectURL(file) : (user.avatar ? `http://localhost:5000${user.avatar}` : `https://ui-avatars.com/api/?name=${user.name}`)} 
+            <img
+              src={file ? URL.createObjectURL(file) : (user.avatar ? `http://localhost:5000${user.avatar}` : `https://ui-avatars.com/api/?name=${user.name}`)}
               className="w-32 h-32 rounded-3xl object-cover border-4 border-slate-50 shadow-md"
               alt="Profile"
             />
@@ -55,7 +55,7 @@ const Settings = () => {
         <div className="space-y-4">
           <div>
             <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2"><FiUser /> Full Name</label>
-            <input 
+            <input
               type="text" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-600"
               value={name} onChange={(e) => setName(e.target.value)}
             />
@@ -66,7 +66,7 @@ const Settings = () => {
           </div>
         </div>
 
-        <button 
+        <button
           disabled={saving}
           className="w-full bg-slate-900 text-white py-5 rounded-3xl font-black hover:bg-black transition"
         >

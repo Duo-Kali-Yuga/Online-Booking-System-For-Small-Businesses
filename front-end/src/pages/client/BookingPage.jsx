@@ -104,7 +104,7 @@ const BookingPage = () => {
       });
 
       alert(rescheduleId ? "Reschedule Successful!" : "Booking Successful!");
-      navigate('/dashboard');
+      navigate('/client');
     } catch (err) {
       alert(err.response?.data?.message || "Booking failed");
     }

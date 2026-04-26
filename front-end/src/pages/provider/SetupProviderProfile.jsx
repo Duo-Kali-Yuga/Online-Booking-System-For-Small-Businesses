@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { motion } from 'framer-motion';
 
+
 const SetupProviderProfile = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ const SetupProviderProfile = () => {
       country: ''
     }
   });
+
+
 
   const industries = ['healthcare', 'beauty', 'education', 'consulting', 'fitness', 'other'];
 
@@ -95,9 +98,13 @@ const SetupProviderProfile = () => {
             Finish Setup
           </button>
         </form>
+
+
       </motion.div>
     </div>
   );
 };
+
+
 
 export default SetupProviderProfile;

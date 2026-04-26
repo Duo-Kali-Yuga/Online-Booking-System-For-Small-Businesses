@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   /* --- Color Palette (Brand) --- */
@@ -44,7 +42,7 @@
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-premium: 10px 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
 @layer base {
@@ -59,3 +57,83 @@
     @apply transition-all duration-200 ease-in-out;
   }
 }
+
+@theme inline {
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-surface);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-brand: var(--color-info);
+}
+
+.custom-arrow::before {
+  content: "";
+  position: absolute;
+  top: -25px; /* adjust position */
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 0;
+  height: 0;
+
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 25px solid var(--brand-primary-hover); /* match border color */
+}
+
+.custom-arrow::after {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--brand-primary); /* matches card background */
+}
+.custom-arrow-left::before {
+  content: "";
+  position: absolute;
+  top: -25px; /* adjust position */
+  left: 2.5%;
+  transform: translateX(-50%);
+
+  width: 0;
+  height: 0;
+
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 25px solid var(--brand-primary-hover); /* match border color */
+}
+
+.custom-arrow-left::after {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 2.5%;
+  transform: translateX(-50%);
+
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--brand-primary); /* matches card background */
+}
+
+.design-btn {
+  @apply bg-linear-to-t from-(--brand-primary-light) via-60% via-(--brand-primary) to-(--brand-primary-light) text-black  py-3 rounded-xl font-bold hover:bg-slate-800 transition-all  shadow-(--shadow-lg) hover:text-white text-center hover:-translate-y-0.5  hover:shadow-2xs duration-600;
+}
+.design-bg {
+  @apply bg-conic-120 via-(--glass-bg) via-30% from-(--overlay-bg) to-(--glass-border)  py-3 rounded-xl font-bold hover:bg-slate-800 transition-all  shadow-(--shadow-lg) hover:text-white text-center hover:-translate-y-0.5  hover:shadow-2xs duration-600;
+}
+.design-bgRight {
+  @apply bg-conic-120 via-(--glass-bg) via-85% from-(--brand-primary-light) to-(--overlay-bg)  py-3 rounded-xl font-bold hover:bg-slate-800 transition-all  shadow-(--shadow-lg) hover:text-white text-center hover:-translate-y-0.5  hover:shadow-2xs duration-600;
+}
+
+.shadow {
+  box-shadow: var(--shadow-premium);
+}
+
+
+
+
+
