@@ -49,14 +49,13 @@ export default function AdminDashboard() {
 
     try {
       if (view === 'appointments') {
-        // Direct appointment deletion
+
         await api.delete(`/admin/appointments/${id}`);
       } else if (view === 'providers') {
-        // Providers are linked to a User, so we delete the associated User ID
-        // item.user is the ID of the account in the User collection
+
         await api.delete(`/admin/users/${item.user}`);
       } else {
-        // Standard user deletion
+
         await api.delete(`/admin/users/${id}`);
       }
 
