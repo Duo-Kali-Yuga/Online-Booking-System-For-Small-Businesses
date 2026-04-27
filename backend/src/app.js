@@ -21,7 +21,8 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: "https://bookingbusinesses.onrender.com"
+  origin: "https://bookingbusinesses.onrender.com",
+  credentials: true
 }));
 app.use(express.json());
 app.use(logger);
