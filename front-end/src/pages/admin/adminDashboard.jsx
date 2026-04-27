@@ -17,25 +17,23 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
 
 
 
-const AdminDashboard = () => {
-  const [view, setView] = useState('users'); // 'users', 'providers', 'appointments'
+export default function AdminDashboard() {
+
+  const [view, setView] = useState('users');
   const [data, setData] = useState([]);
   const [stats, setStats] = useState({ userCount: 0, providerCount: 0, appointmentCount: 0 });
-  const [loading, setLoading] = useState(true);
 
 
   const fetchStats = async () => {
-    const res = await api.get('/admin/stats'); // Add this route to your backend
+    const res = await api.get('/admin/stats');
     setStats(res.data.data);
   };
 
   const fetchCurrentView = async () => {
-    setLoading(true);
     try {
       const res = await api.get(`/admin/${view}`);
       setData(res.data.data);
     } catch (err) { console.error(err); }
-    setLoading(false);
   };
 
   const handleToggleStatus = async (id) => {
@@ -171,4 +169,3 @@ const AdminDashboard = () => {
 
 
 
-export default AdminDashboard;
