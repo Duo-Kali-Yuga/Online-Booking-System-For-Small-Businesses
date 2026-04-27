@@ -17,7 +17,7 @@ export const StatCard = ({ title, value, icon: Icon, color }) => (
 );
 
 
-export default function AdminDashboard() {
+export default function DashboardAdmin() {
 
   const [view, setView] = useState('users');
   const [data, setData] = useState([]);

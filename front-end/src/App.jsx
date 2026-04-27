@@ -28,13 +28,13 @@ import AvailabilityManager from "./pages/provider/AvailabilityManager";
 import ManageReviews from "./features/provider/components/ManageReview";
 
 // Admin
-
-
-
+import DashboardAdmin from "./pages/admin/DashboardAdmin";
 
 // Shared
 import Settings from "./pages/Settings";
-import AdminDashboard from "./pages/admin/AdminDashboard";
+
+
+
 
 
 
@@ -105,7 +105,7 @@ function App() {
               </ProtectedRoute>
             }>
 
-            <Route index element={<AdminDashboard />} />
+            <Route index element={<DashboardAdmin />} />
           </Route>
 
           {/*  FALLBACK  */}
