@@ -24,10 +24,7 @@ const ReviewList = ({ providerId, provider }) => {
   if (reviews.length === 0) return <div className="text-slate-400 text-sm italic">No reviews yet. Be the first!</div>;
 
   return (
-    <div className="space-y-4 mt-6">
-      <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-        Reviews ({reviews.length})
-      </h3>
+    <div className="space-y-4 mt-6 w-full grid grid-cols-1 md:grid-cols-2">
       <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
         {reviews.map((review) => (
           <div key={review._id} className="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm">

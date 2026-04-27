@@ -4,6 +4,7 @@ import api from '../../api/axios';
 import dayjs from 'dayjs';
 import ProviderHeaderStart from '../../components/ProviderHeaderStart';
 import ReviewList from '../../components/ReviewList';
+import ClientHeader from '../../features/client/components/ClientHeader';
 
 
 
@@ -104,7 +105,7 @@ const BookingPage = () => {
       });
 
       alert(rescheduleId ? "Reschedule Successful!" : "Booking Successful!");
-      navigate('/dashboard');
+      navigate('/client');
     } catch (err) {
       alert(err.response?.data?.message || "Booking failed");
     }
@@ -121,41 +122,57 @@ const BookingPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <ClientHeader
+        title="Booking Appointment"
+        subtitle="Manage the appointment"
+      />
       <ProviderHeaderStart provider={provider}/>
 
       {/* Existing Header Layout */}
-      <div className="flex flex-col md:flex-row gap-8 mb-12 items-start">
-        <img 
-          src={provider.avatar ? `${API_BASE}${provider.avatar}` : ""} 
-          className="w-32 h-32 rounded-3xl object-cover shadow-lg"
-        />
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold text-slate-800">{provider.businessName}</h1>
-          <p className="text-slate-500 mb-2">📍 {provider.location?.city}, {provider.location?.country}</p>
-          
-          {/* Show Average Rating here using your provider ratingStats */}
-          <div className="flex items-center gap-2 mb-4">
-             <span className="text-yellow-400 font-bold text-lg">★ {provider.ratingStats?.averageRating || 0}</span>
-             <span className="text-slate-400 text-sm">({provider.ratingStats?.totalReviews || 0} reviews)</span>
-          </div>
+      <div className="flex flex-col mb-12 items-start">
+        <h1 className="text-2xl font-bold text-(--brand-primary-hover) pl-12">Basic Information</h1>
 
-          <p className="text-slate-600 leading-relaxed max-w-xl">{provider.bio}</p>
+        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-6 border-t-4 rounded-2xl py-6 px-4 custom-arrow-left border-(--brand-primary-hover) w-full">
+
+          <div className="flex-1 flex justify-between px-4 py-2 border-2 border-(--border-focus) bg-(--glass-bg) text-center rounded-2xl shadow-(--shadow-lg)">
+            <div className='flex-2 flex flex-col justify-center items-center'>
+              <h2 className="text-ms font-bold text-(--overlay-bg)">Company Name:</h2>
+              <h1 className="text-xl font-bold text-brand">{provider.businessName}</h1>
+            </div>
+            <div className='flex-1 flex flex-col justify-center items-center'>
+              <h2 className="text-ms font-bold text-(--overlay-bg)">Industry:</h2>
+              <h1 className="text-xl font-bold text-brand">{provider.industry}</h1>
+            </div>
+          </div>
+          <div className="flex-1 flex justify-between px-3 py-2 border-2 border-(--border-focus) bg-(--glass-bg) text-center rounded-2xl shadow-(--shadow-lg)">
+            <div className='flex-1 flex flex-col justify-center items-center'>
+              <h2 className="text-ms font-bold text-(--overlay-bg)">Provider Name:</h2>
+              <h1 className="text-xl font-bold text-brand">{provider.user.name}</h1>
+            </div>
+            <div className='flex-1 flex flex-col justify-center items-center'>
+              <h2 className="text-ms font-bold text-(--overlay-bg)">Email:</h2>
+              <h1 className="text-xl font-bold text-brand">{provider.user.email}</h1>
+            </div>
+          </div>
+          <div className="flex-1 flex flex-col justify-center items-center border-2 border-(--border-focus) bg-(--glass-bg) text-center rounded-2xl shadow-(--shadow-lg)">
+            <h2 className="text-ms font-bold text-(--overlay-bg)">Location:</h2>
+            <p className="text-slate-500 mb-2">📍 {provider.location?.address}, {provider.location?.city}, {provider.location?.country}</p>
+          </div>
+          <div className="flex-1 flex flex-col justify-center items-center border-2 border-(--border-focus) bg-(--glass-bg) text-center rounded-2xl shadow-(--shadow-lg)">
+            <h2 className="text-ms font-bold text-(--overlay-bg)">Description:</h2>
+            <p className="text-slate-500 mb-2">
+              {provider.description ? provider.description : "No description set..."}
+              </p>
+          </div>
         </div>
       </div>
-      <img 
-        src={provider.avatar ? `${API_BASE}${provider.avatar}` : ""} 
-        className="w-32 h-32 rounded-3xl object-cover"
-      />
-      <div className="mb-8 border-b pb-6">
-        <h1 className="text-3xl font-bold text-slate-800">{provider.businessName}</h1>
-        <p className="text-slate-500">📍 {provider.location?.city}</p>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <h1 className="text-2xl font-bold text-(--brand-primary-hover) pl-12">Basic Information</h1>
+      <div className="relative grid grid-cols-1 lg:grid-cols-3 gap-10 custom-arrow-left border-t-4 rounded-2xl py-6 px-4  border-(--brand-primary-hover)">
         {/* Step 1: Select Service */}
-        <section className="lg:col-span-2 space-y-10">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span className="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+        <section className="lg:col-span-2 space-y-10  py-6 px-4 slideUp">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-brand">
+            <span className="bg-(--brand-primary) text-(--bg-main) w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
             Select Service
           </h2>
           <div className="space-y-3">
@@ -175,9 +192,9 @@ const BookingPage = () => {
         </section>
 
         {/* Step 2 & 3: Date & Slots */}
-        <section>
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span className="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+        <section className='slideUp py-6 px-4'>
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-brand">
+            <span className="bg-(--brand-primary) text-(--bg-main) w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
             Pick Date & Time
           </h2>
           
@@ -216,16 +233,24 @@ const BookingPage = () => {
               No slots available for this day.
             </div>
           )}
+        </section>
 
+
+      </div>
+      {/* Existing Header Layout */}
+        <div className="flex flex-col items-start w-full">
+          <h1 className="text-2xl font-bold text-(--brand-primary-hover) pl-12 flex justify-evenly items-center w-full">
+            <span className="text-lg font-bold text-(--brand-primary-hover) flex items-center gap-2">
+              Reviews ({provider.averageRating?.totalReviews || 0})
+            </span>
+            <span className="text-yellow-400 font-bold text-lg">★ {provider.ratingStats?.averageRating || 0} </span>
+          </h1>
+
+          <div className="relative w-full border-t-4 rounded-2xl px-4 custom-arrow-left border-(--brand-primary-hover) ">
           {/* Sidebar: Reviews Column */}
-          <div className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 h-fit">
             <ReviewList providerId={providerId} provider = {provider}/>
           </div>
-          {/* <aside className="bg-slate-50/50 p-6 rounded-3xl border border-slate-100 h-fit">
-            <ReviewList providerId={providerId} provider = {provider}/>
-          </aside> */}
-        </section>
-      </div>
+        </div>
     </div>
   );
 };

@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import dayjs from 'dayjs';
 import { Navigate, useNavigate } from 'react-router-dom';
 import ReviewModal from '../../components/ReviewModel';
+import { API_BASE } from '../../lib/public.constants';
+
 
 
 const ClientDashboard = () => {
@@ -13,7 +15,6 @@ const ClientDashboard = () => {
   const [selectedAppt, setSelectedAppt] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const API_BASE = "http://localhost:5000";
 
   useEffect(() => {
     fetchMyAppointments();
@@ -151,69 +152,11 @@ const ClientDashboard = () => {
           </div>
         </section>
       </div>
-{/* 
-      {loading ? (
-        <div className="text-center py-10">Loading your schedule...</div>
-      ) : (
-        <div className="space-y-4">
-          <AnimatePresence>
-            {appointments.map((appt) => (
-              <motion.div
-                key={appt._id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4"
-              >
-                <div className="flex gap-6 items-center">
-                  <div className="bg-blue-50 text-blue-700 p-3 rounded-xl text-center min-w-[80px]">
-                    <div className="text-xs uppercase font-bold">{dayjs(appt.date).format('MMM')}</div>
-                    <div className="text-2xl font-black">{dayjs(appt.date).format('DD')}</div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-800">
-                      {appt.provider?.businessName || "Service Provider"}
-                    </h3>
-                    <p className="text-slate-600 font-medium">{appt.service?.name}</p>
-                    <div className="text-sm text-slate-400 mt-1">
-                      🕒 {appt.startTime} • {appt.service?.duration} mins
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    appt.status === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
-                  }`}>
-                    {appt.status.toUpperCase()}
-                  </span>
-                  
-                  {appt.status === 'confirmed' && (
-                    <button
-                      onClick={() => handleCancel(appt._id)}
-                      className="text-sm font-semibold text-red-500 hover:text-red-700 transition"
-                    >
-                      Cancel Booking
-                    </button>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {appointments.length === 0 && (
-            <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-              <p className="text-slate-400">You haven't booked any appointments yet.</p>
-            </div>
-          )}
-        </div>
-      )} */}
     <ReviewModal 
       isOpen={isModalOpen}
       onClose={() => setIsModalOpen(false)}
       appointment={selectedAppt}
-      onReviewSuccess={fetchMyAppointments} // Refresh list to remove the button if already reviewed
+      onReviewSuccess={fetchMyAppointments}
     />
     </div>
   );

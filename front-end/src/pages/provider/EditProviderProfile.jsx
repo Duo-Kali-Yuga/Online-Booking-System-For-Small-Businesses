@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { FiCamera, FiMapPin, FiBriefcase, FiPhone, FiAlignLeft, FiAlertTriangle } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
+import ProviderHeader from '../../features/provider/components/ProviderHeader';
+import Button from '../../components/ui/Button';
+
 
 
 const EditProviderProfile = () => {
@@ -91,76 +94,6 @@ const EditProviderProfile = () => {
     }
   };
 
-
-  // const handleSave = async (e) => {
-  //   e.preventDefault();
-  //   setSaving(true);
-  //   try {
-  //     await api.patch('/providers/profile', formData);
-  //     alert("Profile updated successfully!");
-  //   } catch (err) {
-  //     alert("Error updating profile");
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
-
-  // const handleSave = async (e) => {
-  //   e.preventDefault();
-  //   setSaving(true);
-
-  //   // We MUST use FormData for file uploads
-  //   const data = new FormData();
-  //   data.append('businessName', formData.businessName);
-  //   data.append('bio', formData.bio);
-  //   data.append('industry', formData.industry);
-  //   if (file) data.append('avatar', file); // Append the actual file
-
-  //   try {
-  //     // Important: Use multipart/form-data header
-  //     await api.patch('/providers/profile', data, {
-  //       headers: { 'Content-Type': 'multipart/form-data' }
-  //     });
-  //     alert("Local profile updated!");
-  //   } catch (err) {
-  //     alert("Upload failed.");
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
-
-  // const handleSaveAll = async (e) => {
-  //   e.preventDefault();
-  //   setSaving(true);
-
-  //   // 1. Prepare User Data (Identity)
-  //   const userData = new FormData();
-  //   userData.append('name', providerName); // The personal name of the user
-  //   if (avatarFile) userData.append('avatar', avatarFile);
-
-  //   // 2. Prepare Provider Data (Business)
-  //   const businessData = {
-  //     businessName: formData.businessName,
-  //     bio: formData.bio,
-  //     industry: formData.industry,
-  //     settings: settings // The hours/buffer we built earlier
-  //   };
-
-  //   try {
-  //     // Hit both endpoints simultaneously
-  //     await Promise.all([
-  //       api.patch('/users/me', userData), 
-  //       api.patch('/providers/profile', businessData)
-  //     ]);
-      
-  //     alert("Professional profile and identity updated!");
-  //   } catch (err) {
-  //     alert("Error saving some data.");
-  //   } finally {
-  //     setSaving(false);
-  //   }
-  // };
-
   const handleSaveAll = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -222,88 +155,61 @@ const EditProviderProfile = () => {
   if (loading) return <div className="p-10 text-center">Loading settings...</div>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-black mb-8">Provider Settings</h1>
+    <div className="max-w-3xl mx-auto p-6 flex flex-col gap-3">
+
+      <ProviderHeader
+        title="Provider Settings"
+        subtitle="Update your information"
+      />
 
       <form onSubmit={handleSaveAll} className="space-y-6">
         {/* Avatar Upload Section */}
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-center">
-          <div className="relative mb-4">
-            <img 
-              src={
-                  previewUrl || 
-                  (formData.avatar ? `http://localhost:5000${formData.avatar}` : null) || 
-                  `https://ui-avatars.com/api/?name=${formData.businessName || 'User'}`
-                } 
-                className="w-32 h-32 rounded-3xl object-cover bg-slate-100" 
-                alt="Profile"
-                className="w-32 h-32 rounded-3xl object-cover border-4 border-slate-50"
-              alt="Preview"
-            />
-            <div className="absolute -bottom-2 -right-2 bg-blue-600 p-2 rounded-xl text-white shadow-lg">
-              <FiCamera />
+        <div className="bg-white p-8 rounded-3xl shadow-sm  flex flex-col items-center slideUp">
+
+          <div className="flex flex-col items-center gap-2">
+            <div className="relative border-2 border-slate-100 rounded-3xl">
+              <img 
+                src={
+                    previewUrl || 
+                    (formData.avatar ? `http://localhost:5000${formData.avatar}` : null) || 
+                    `https://ui-avatars.com/api/?name=${formData.businessName || 'User'}`
+                  } 
+                  className="w-32 h-32 rounded-3xl object-cover " 
+                  alt="Profile"
+                  className="w-32 h-32 rounded-3xl object-cover"
+                className="w-32 h-32 rounded-3xl object-cover" 
+              />
+              <label className="absolute bottom-0 right-0 cursor-pointer bg-blue-600 p-2 rounded-xl">
+                <FiCamera className="text-white" />
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleFileChange} 
+                />
+              </label>
             </div>
+
+            {(formData.avatar || previewUrl) && (
+              <button 
+                type="button"
+                onClick={handleRemovePhoto}
+                className="text-xs font-bold text-red-500 hover:text-red-700 uppercase tracking-widest mt-2 cursor-pointer"
+              >
+                Remove Photo
+              </button>
+            )}
           </div>
-          <input 
-            type="text" 
-            placeholder="Paste Image URL (e.g., Cloudinary/Imgur)"
-            className="w-full max-w-sm p-2 text-sm bg-slate-50 border rounded-lg text-center"
-            value={formData.avatar}
-            onChange={(e) => setFormData({...formData, avatar: e.target.value})}
-          />
-          <input 
-            type="file" 
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files[0])}
-            className="hidden" 
-            id="avatar-upload" 
-          />
-          <label htmlFor="avatar-upload" className="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-xl">
-            Choose Local Photo
-          </label>
+
         </div>
 
         {/* Camera Label Input */}
 
-        <div className="flex flex-col items-center gap-2">
-          <div className="relative">
-            <img 
-              src={
-                  previewUrl || 
-                  (formData.avatar ? `http://localhost:5000${formData.avatar}` : null) || 
-                  `https://ui-avatars.com/api/?name=${formData.businessName || 'User'}`
-                } 
-                className="w-32 h-32 rounded-3xl object-cover bg-slate-100" 
-                alt="Profile"
-                className="w-32 h-32 rounded-3xl object-cover"
-              className="w-32 h-32 rounded-3xl object-cover" 
-            />
-            <label className="absolute bottom-0 right-0 cursor-pointer bg-blue-600 p-2 rounded-xl">
-              <FiCamera className="text-white" />
-              <input 
-                type="file" 
-                className="hidden" 
-                accept="image/*" 
-                onChange={handleFileChange} 
-              />
-            </label>
-          </div>
-
-          {(formData.avatar || previewUrl) && (
-            <button 
-              type="button"
-              onClick={handleRemovePhoto}
-              className="text-xs font-bold text-red-500 hover:text-red-700 uppercase tracking-widest mt-2"
-            >
-              Remove Photo
-            </button>
-          )}
-        </div>
 
         {/* Core Info */}
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6 slideUp">
           <div>
-            <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+            <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
               <FiBriefcase /> Business Name
             </label>
             <input 
@@ -314,7 +220,7 @@ const EditProviderProfile = () => {
             />
           </div>
           <div>
-            <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+            <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
               <FiBriefcase /> Industry Type
             </label>
             <select 
@@ -329,7 +235,7 @@ const EditProviderProfile = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Address Input */}
             <div>
-              <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
                 <FiMapPin /> Street Address
               </label>
               <input 
@@ -345,7 +251,7 @@ const EditProviderProfile = () => {
 
             {/* City Input */}
             <div>
-              <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
                 City
               </label>
               <input 
@@ -361,7 +267,7 @@ const EditProviderProfile = () => {
 
             {/* Country Input */}
             <div>
-              <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
                 Country
               </label>
               <input 
@@ -376,7 +282,7 @@ const EditProviderProfile = () => {
             </div>
           </div>
             <div>
-              <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
                 <FiPhone /> Contact Phone
               </label>
               <input 
@@ -389,7 +295,7 @@ const EditProviderProfile = () => {
           </div>
 
           <div>
-            <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase mb-2">
+            <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
               <FiAlignLeft /> About / Description
             </label>
             <textarea 
@@ -402,13 +308,14 @@ const EditProviderProfile = () => {
           </div>
         </div>
 
-        <button 
+        <Button 
           type="submit" 
           disabled={saving}
-          className="w-full bg-slate-900 text-white py-5 rounded-3xl font-black text-lg hover:bg-black transition disabled:bg-slate-300"
+          className="w-full  py-5 rounded-3xl font-black text-lg transition disabled:bg-slate-300"
+          variant='design'
         >
           {saving ? 'Updating Profile...' : 'Save Professional Profile'}
-        </button>
+        </Button>
       </form>
       <div className="mt-12 pt-8 border-t border-red-100 bg-red-50/30 p-6 rounded-3xl">
         <h3 className="text-red-600 font-black text-xl mb-2 flex items-center gap-2">
@@ -443,5 +350,6 @@ const EditProviderProfile = () => {
     </div>
   );
 };
+
 
 export default EditProviderProfile

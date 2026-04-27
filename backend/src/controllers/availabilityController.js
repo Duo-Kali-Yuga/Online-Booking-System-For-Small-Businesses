@@ -61,11 +61,30 @@ export const getMyAvailability = async (req, res) => {
   }
 };
 
-// export const getMyAvailability = async (req, res) => {
-//   try {
-//     console.log("Attempting to send hardcoded response...");
-//     return res.json({ success: true, message: "Route is reaching the controller!" });
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// };
+export const deleteAvailability = async (req, res) => {
+  const { dayOfWeek } = req.params;
+
+  console.log("DELETE request for day:", dayOfWeek);
+  console.log("USER:", req.user._id);
+
+  const provider = await Provider.findOne({ user: req.user._id });
+  
+  if (!provider) return res.status(404).json({ message: "Provider not found" });
+
+
+  const result = await Availability.findOneAndDelete({
+    provider: provider._id,
+    dayOfWeek: Number(dayOfWeek), // 🔥 IMPORTANT
+  });
+
+  console.log("DELETE RESULT:", result);
+
+  if (!result) {
+    return res.status(404).json({
+      success: false,
+      message: "No availability found for this day",
+    });
+  }
+
+  res.json({ success: true, message: "Deleted" });
+};

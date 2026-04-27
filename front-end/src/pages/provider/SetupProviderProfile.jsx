@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { motion } from 'framer-motion';
 
+
 const SetupProviderProfile = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -15,12 +16,13 @@ const SetupProviderProfile = () => {
     }
   });
 
+
+
   const industries = ['healthcare', 'beauty', 'education', 'consulting', 'fitness', 'other'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // POST to your /api/providers route
       await api.post('/api/providers', formData);
       alert("Business profile created successfully!");
       navigate('/provider'); // Now they can go to the dashboard
@@ -95,9 +97,13 @@ const SetupProviderProfile = () => {
             Finish Setup
           </button>
         </form>
+
+
       </motion.div>
     </div>
   );
 };
+
+
 
 export default SetupProviderProfile;
