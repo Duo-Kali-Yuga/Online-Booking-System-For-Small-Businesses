@@ -59,7 +59,7 @@ export default function AdminDashboard() {
         // Standard user deletion
         await api.delete(`/admin/users/${id}`);
       }
-      
+
       fetchCurrentView();
       fetchStats();
     } catch (err) {
@@ -84,15 +84,14 @@ export default function AdminDashboard() {
           </h1>
           <p className="text-slate-500 font-medium">Global management and service oversight.</p>
         </div>
-        
+
         <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
           {['users', 'providers', 'appointments'].map((tab) => (
             <button
               key={tab}
               onClick={() => setView(tab)}
-              className={`px-6 py-2 rounded-xl text-sm font-bold capitalize transition ${
-                view === tab ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'
-              }`}
+              className={`px-6 py-2 rounded-xl text-sm font-bold capitalize transition ${view === tab ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'
+                }`}
             >
               {tab}
             </button>
@@ -122,10 +121,10 @@ export default function AdminDashboard() {
             <tbody className="divide-y divide-slate-50">
               <AnimatePresence mode='wait'>
                 {data.map((item) => (
-                  <motion.tr 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }} 
-                    key={item._id} 
+                  <motion.tr
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    key={item._id}
                     className="hover:bg-slate-50/50 transition-colors"
                   >
                     <td className="px-8 py-5">
@@ -136,22 +135,21 @@ export default function AdminDashboard() {
                       {view === 'appointments' ? item.service?.name : (item.role || 'Provider')}
                     </td>
                     <td className="px-8 py-5">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${
-                        (item.active || item.status === 'confirmed') ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
-                      }`}>
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${(item.active || item.status === 'confirmed') ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
+                        }`}>
                         {item.status || (item.active ? 'Active' : 'Disabled')}
                       </span>
                     </td>
                     <td className="px-8 py-5 text-right space-x-2">
                       {view === 'providers' && (
-                        <button 
+                        <button
                           onClick={() => handleToggleStatus(item._id)}
                           className={`p-2 rounded-lg transition-colors ${item.active ? 'text-green-500 bg-green-50' : 'text-slate-400 bg-slate-100'}`}
                         >
                           <FiPower size={18} />
                         </button>
                       )}
-                      <button 
+                      <button
                         onClick={() => handleDelete(item._id, item)} // Pass 'item' here
                         className="p-2 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       >
