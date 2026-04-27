@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { FiShield, FiAlertCircle, FiCheckCircle, FiTrash2, FiSearch } from 'react-icons/fi';
 
-const AdminDashboard2 = () => {
+const AdminDashboar = () => {
   const [users, setUsers] = useState([]);
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);

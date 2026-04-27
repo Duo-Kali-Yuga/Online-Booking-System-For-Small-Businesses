@@ -5,7 +5,8 @@ import { FiUsers, FiBriefcase, FiCalendar, FiTrash2, FiPower, FiShield } from 'r
 
 
 
-const StatCard = ({ title, value, icon: Icon, color }) => (
+
+export const StatCard = ({ title, value, icon: Icon, color }) => (
   <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5">
     <div className={`p-4 rounded-2xl ${color}`}><Icon size={24} /></div>
     <div>
@@ -14,7 +15,6 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
     </div>
   </div>
 );
-
 
 
 export default function AdminDashboard() {
@@ -71,6 +71,9 @@ export default function AdminDashboard() {
     fetchStats();
     fetchCurrentView();
   }, [view]);
+
+
+
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
