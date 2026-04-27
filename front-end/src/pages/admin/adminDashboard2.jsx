@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { FiShield, FiAlertCircle, FiCheckCircle, FiTrash2, FiSearch } from 'react-icons/fi';
 
-const AdminDashboard = () => {
+const AdminDashboard2 = () => {
   const [users, setUsers] = useState([]);
   const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -154,5 +154,3 @@ const AdminDashboard = () => {
     </div>
   );
 };
-
-export default AdminDashboard
