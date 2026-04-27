@@ -10,6 +10,7 @@ const ProviderAvailability = () => {
   const [saving, setSaving] = useState(false);
   const [editingDay, setEditingDay] = useState(1); // Default to Monday
   
+  // This state now mirrors the 'settings' object in your Provider model
   const [settings, setSettings] = useState({
     bufferTime: 10,
     operatingHours: DAYS.map((day, index) => ({

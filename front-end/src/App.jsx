@@ -24,7 +24,7 @@ import ProviderSetup from "./pages/provider/ProviderSetup";
 import ProviderServices from "./pages/provider/ProviderServices";
 import ProviderBookings from "./pages/provider/ProviderBookings";
 import EditProviderProfile from "./pages/provider/EditProviderProfile";
-import AvailabilityManager from "./features/provider/components/AvailabilityManager";
+import AvailabilityManager from "./pages/provider/AvailabilityManager";
 import ManageReviews from "./features/provider/components/ManageReview";
 
 // Admin
@@ -32,6 +32,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 
 // Shared
 import Settings from "./pages/Settings";
+
+
 
 function App() {
   return (
@@ -112,5 +114,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

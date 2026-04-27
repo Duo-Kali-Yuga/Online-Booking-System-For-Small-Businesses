@@ -133,6 +133,14 @@
   box-shadow: var(--shadow-premium);
 }
 
+.slide {
+  @apply bg-linear-to-t from-(--brand-primary-light) via-60% via-(--brand-primary) to-(--brand-primary-light) py-3 rounded-xl font-bold hover:bg-slate-800 transition-all  shadow-(--shadow-lg)  text-center hover:shadow-2xs duration-600;
+}
+
+.slideUp {
+  @apply bg-conic-120 via-(--glass-bg) via-85% from-(--brand-primary-light) to-(--overlay-bg)  py-3 rounded-xl font-bold hover:bg-slate-400 transition-all  shadow-(--shadow-lg) hover:shadow-2xs duration-600;
+}
+
 
 
 

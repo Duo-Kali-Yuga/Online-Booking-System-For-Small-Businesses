@@ -9,7 +9,7 @@ const ProviderCard = ({ provider }) => {
 
 
   return (
-    <motion.div whileHover={{ y: -5 }} className="bg-(--bg-card) rounded-2xl overflow-hidden shadow-sm border border-(--border-focus) flex flex-col">
+    <motion.div whileHover={{ y: -5 }} className="bg-(--bg-card) rounded-2xl overflow-hidden shadow-sm border border-(--border-focus) flex flex-col ">
 
       <div className="h-32 bg-linear-to-t from-(--brand-primary) via-40% via-(--brand-light) to-(--brand-primary-hover) flex items-center justify-center">
         <span className="text-(--overlay-bg) text-4xl font-bold">

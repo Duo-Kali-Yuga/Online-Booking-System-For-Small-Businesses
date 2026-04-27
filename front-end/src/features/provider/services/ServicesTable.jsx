@@ -22,7 +22,7 @@ export default function ServicesTable({ services, onDelete }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="border-b-2 rounded-full bg-slate-100 text-center hover:bg-(--border-focus) group"
+                className="border-b-2 rounded-full bg-slate-100 text-center hover:bg-(--border-focus) group design-bg"
               >
                 <td className="p-4">{s.name}</td>
                 <td className="p-4">{s.duration} min</td>

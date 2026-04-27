@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import api from '../../../api/axios';
 import dayjs from 'dayjs';
 import { FiMessageSquare, FiCheckCircle } from 'react-icons/fi';
+import ProviderHeader from './ProviderHeader';
+import Button from '../../../components/ui/Button';
+
+
 
 const ManageReviews = () => {
   const [reviews, setReviews] = useState([]);
@@ -40,12 +44,13 @@ const ManageReviews = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800">Manage Feedback</h1>
-        <p className="text-slate-500">View and respond to client reviews</p>
-      </header>
 
-      <div className="space-y-6">
+      <ProviderHeader
+        title="Manage Feedback"
+        subtitle="View and respond to client reviews"
+      />
+
+      <div className="space-y-6 mt-4">
         {reviews.map((review) => (
           <div key={review._id} className="bg-white border border-slate-100 rounded-3xl p-6 shadow-sm">
             <div className="flex justify-between items-start mb-4">
@@ -77,18 +82,19 @@ const ManageReviews = () => {
             ) : (
               <div className="space-y-3">
                 <textarea
-                  className="w-full p-4 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 outline-none h-24"
+                  className="w-full p-4 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-blue-500 outline-none h-24 slideUp"
                   placeholder="Type your response to the client..."
                   value={replyText[review._id] || ''}
                   onChange={(e) => setReplyText({ ...replyText, [review._id]: e.target.value })}
                 />
-                <button
+                <Button
                   onClick={() => handleResponse(review._id)}
                   disabled={!replyText[review._id]}
-                  className="flex items-center gap-2 px-6 py-2 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-900 transition disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-2 font-bold rounded-xl  transition disabled:opacity-50 slideUp"
+                  variant=''
                 >
                   <FiMessageSquare /> Send Response
-                </button>
+                </Button>
               </div>
             )}
           </div>

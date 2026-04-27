@@ -23,7 +23,6 @@ const SetupProviderProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // POST to your /api/providers route
       await api.post('/api/providers', formData);
       alert("Business profile created successfully!");
       navigate('/provider'); // Now they can go to the dashboard

@@ -1,22 +1,21 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
+export default function ProtectedRoute({ children, allowedRoles }) {
   const { user, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  // 🔥 WAIT until auth loads
+  if (loading) {
+    return <div className="p-10 text-center">Loading...</div>;
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    // If user role is not allowed, send them to their specific home
-    const redirectPath = user.role === 'provider' ? '/provider' : '/app';
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
-};
-
-export default ProtectedRoute;
+}

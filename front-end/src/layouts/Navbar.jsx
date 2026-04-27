@@ -19,7 +19,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  if (!user) return null;
+  // if (!user) return null;
 
   const handleLogout = () => {
     logout();

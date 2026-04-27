@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 import { FiCamera, FiUser, FiMail } from 'react-icons/fi';
+import ClientHeader from '../features/client/components/ClientHeader';
+import Button from '../components/ui/Button';
 
 const Settings = () => {
   const { user, updateUserData } = useAuth(); // Assuming you added updateUserData to Context
@@ -33,7 +35,12 @@ const Settings = () => {
 
   return (
     <div className="max-w-2xl mx-auto p-8">
-      <h1 className="text-3xl font-black mb-8 text-slate-900">Account Settings</h1>
+      <h1 className="text-3xl font-black mb-8 text-slate-900"></h1>
+
+      <ClientHeader
+        title="Account Settings"
+        subtitle="Change your Profile and more..."
+      />
 
       <form onSubmit={handleUpdate} className="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm space-y-8">
         {/* Avatar Section */}
@@ -66,15 +73,17 @@ const Settings = () => {
           </div>
         </div>
 
-        <button
+        <Button
           disabled={saving}
-          className="w-full bg-slate-900 text-white py-5 rounded-3xl font-black hover:bg-black transition"
+          className="w-full py-5 rounded-3xl font-black transition"
+          variant='design'
         >
           {saving ? "Saving..." : "Update Settings"}
-        </button>
+        </Button>
       </form>
     </div>
   );
 };
+
 
 export default Settings;
