@@ -20,7 +20,9 @@ import userRoutes from "./routes/userRoutes.js";
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: "https://bookingbusinesses.onrender.com"
+}));
 app.use(express.json());
 app.use(logger);
 app.use('/uploads', express.static('uploads'));
