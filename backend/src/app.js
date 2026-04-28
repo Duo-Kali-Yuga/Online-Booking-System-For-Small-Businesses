@@ -20,19 +20,27 @@ import userRoutes from "./routes/userRoutes.js";
 const app = express();
 
 
-// Internet Host
-const originOptions = "https://bookingbusinesses.onrender.com"
+const allowedOrigins = [
+  'https://booking-businesses.vercel.app', // Your Vercel frontend
+  'http://localhost:5173', // Local development (Vite)
+];
 
-// Local Host
-// const originOptions = "http://localhost:5173"
-
-
-// Middlewares
 app.use(cors({
-  origin: originOptions,
-  methods: ["GET", "POST", "PATCH", "DELETE"],
-  credentials: true
+  origin: function (origin, callback) {
+
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 app.use(logger);
 app.use('/uploads', express.static('uploads'));

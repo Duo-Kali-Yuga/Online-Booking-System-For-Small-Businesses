@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
 
-        const res = await api.get("/auth/me"); // ✅ FIXED
+        const res = await api.get("/auth/me");
         setUser(res.data);
       } catch (err) {
         console.error("Auth restore failed");
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
     checkUser();
   }, []);
 
-  // 🔥 Login
+
   const login = async (email, password) => {
     const res = await api.post("/auth/login", { email, password });
 
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     return res.data.user;
   };
 
-  // 🔥 Logout
+
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
