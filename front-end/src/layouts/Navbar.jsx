@@ -13,6 +13,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_BASE } from "../lib/public.constants";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -101,7 +102,7 @@ const Navbar = () => {
             <img
               src={
                 user.avatar
-                  ? `http://localhost:5000${user.avatar}`
+                  ? `${API_BASE}${user.avatar}`
                   : `https://ui-avatars.com/api/?name=${encodeURIComponent(
                       user.name
                     )}`

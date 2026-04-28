@@ -32,6 +32,7 @@ import DashboardAdmin from "./pages/admin/DashboardAdmin";
 
 // Shared
 import Settings from "./pages/Settings";
+import ServerWarmer from "./components/layout/ServerWarmer";
 
 
 
@@ -42,6 +43,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
+        <ServerWarmer/>
 
         <Routes>
 
