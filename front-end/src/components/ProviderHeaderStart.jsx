@@ -1,14 +1,18 @@
 import React from 'react'
 import dayjs from 'dayjs';
+import { API_BASE } from '../lib/public.constants';
+
+
 
 
 const ProviderHeaderStart = ({provider}) => {
   if (!provider) return null;
 
-  const { ratingStats, businessName, bio, avatar } = provider;
+  console.log(provider)
+
+  const { ratingStats, businessName, avatar, user, description } = provider;
   
-  // Generate a dynamic fallback if avatar is missing
-  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(businessName)}&background=0D8ABC&color=fff&size=128`;
+
 
   return (
     <div className="bg-white border-b border-slate-100 pb-8 pt-4 mb-8">
@@ -18,7 +22,7 @@ const ProviderHeaderStart = ({provider}) => {
           {/* Avatar Section */}
           <div className="relative">
             <img 
-              src={avatar || fallbackAvatar} 
+              src={avatar ? `${API_BASE}${avatar}` : `https://ui-avatars.com/api/?name=${user.name}`}
               alt={businessName}
               className="w-24 h-24 md:w-32 md:h-32 rounded-3xl object-cover shadow-lg border-4 border-white"
             />
@@ -49,9 +53,9 @@ const ProviderHeaderStart = ({provider}) => {
               </div>
             </div>
 
-            {bio && (
+            {description && (
               <p className="mt-4 text-slate-500 max-w-2xl leading-relaxed text-sm md:text-base">
-                {bio}
+                {description}
               </p>
             )}
           </div>

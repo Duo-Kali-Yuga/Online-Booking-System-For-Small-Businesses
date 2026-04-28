@@ -19,9 +19,18 @@ import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
+
+// Internet Host
+const originOptions = "https://bookingbusinesses.onrender.com"
+
+// Local Host
+// const originOptions = "http://localhost:5173"
+
+
 // Middlewares
 app.use(cors({
-  origin: "https://bookingbusinesses.onrender.com",
+  origin: originOptions,
+  methods: ["GET", "POST", "PATCH", "DELETE"],
   credentials: true
 }));
 app.use(express.json());

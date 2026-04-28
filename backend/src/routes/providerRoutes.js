@@ -4,12 +4,16 @@ import {
   getMyProvider,
   getProviders,
   getProviderById,
-  updateProviderProfile
+  updateProviderProfile,
+  updateMe
 } from "../controllers/providerController.js";
 import {
   updateAppointmentStatus,
 } from "../controllers/appointmentController.js";
 import { protect, isProvider } from "../middlewares/authMiddleware.js";
+import upload from "../middlewares/uploadMiddleware.js";
+
+
 
 const router = express.Router();
 
@@ -19,6 +23,7 @@ router.post("/", protect, isProvider, createProvider);
 router.get("/me", protect, isProvider, getMyProvider);
 router.get("/:id", getProviderById);
 router.patch('/:id/status', protect, isProvider, updateAppointmentStatus);
-router.patch("/profile", protect, isProvider, updateProviderProfile);
+router.patch("/profile", protect, upload.single('avatar'), isProvider, updateProviderProfile);
+router.patch('/set', protect, updateMe);
 
 export default router;

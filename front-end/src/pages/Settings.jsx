@@ -19,6 +19,8 @@ const Settings = () => {
     data.append('name', name);
     if (file) data.append('avatar', file);
 
+    console.log(data)
+
     try {
       const res = await api.patch('/users/me', data, {
         headers: { 'Content-Type': 'multipart/form-data' }

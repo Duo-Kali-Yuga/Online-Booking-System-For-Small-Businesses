@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { INDUSTRIES } from '../../lib/public.constants';
 import ProviderSearchForm from '../../features/client/components/ProviderSearchForm';
 import ProviderList from '../../features/client/components/ProviderList';
+import ClientHeader from '../../features/client/components/ClientHeader';
 
 
 const ClientDiscovery = () => {
@@ -54,12 +55,12 @@ const ClientDiscovery = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <header className="mb-12 text-center">
-        <h1 className="text-4xl font-bold text-slate-900 mb-4">Find a Service</h1>
-        <p className="text-slate-600">Book professional services in your city instantly.</p>
-      </header>
+      <ClientHeader
+        title="Find a Service"
+        subtitle="Book professional services in your city instantly."
+      />
 
-      <div>
+      <div className='mt-6'>
         <ProviderSearchForm
           filters={filters}
           setFilters={setFilters}

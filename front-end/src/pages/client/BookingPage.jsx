@@ -5,12 +5,11 @@ import dayjs from 'dayjs';
 import ProviderHeaderStart from '../../components/ProviderHeaderStart';
 import ReviewList from '../../components/ReviewList';
 import ClientHeader from '../../features/client/components/ClientHeader';
+import { API_BASE } from '../../lib/public.constants';
 
 
 
 const BookingPage = () => {
-  const API_BASE = "http://localhost:5000";
-
   const { providerId } = useParams();
   const navigate = useNavigate();
 
@@ -154,9 +153,15 @@ const BookingPage = () => {
               <h1 className="text-xl font-bold text-brand">{provider.user.email}</h1>
             </div>
           </div>
-          <div className="flex-1 flex flex-col justify-center items-center border-2 border-(--border-focus) bg-(--glass-bg) text-center rounded-2xl shadow-(--shadow-lg)">
-            <h2 className="text-ms font-bold text-(--overlay-bg)">Location:</h2>
-            <p className="text-slate-500 mb-2">📍 {provider.location?.address}, {provider.location?.city}, {provider.location?.country}</p>
+          <div className="flex-1 flex justify-between px-3 py-2 border-2 border-(--border-focus) bg-(--glass-bg) text-center rounded-2xl shadow-(--shadow-lg)">
+            <div className='flex-1 flex flex-col justify-center items-center'>
+              <h2 className="text-ms font-bold text-(--overlay-bg)">Phone:</h2>
+              <p className="text-md font-bold text-brand">{provider.phone}</p>
+            </div>
+            <div className='flex-1 flex flex-col justify-center items-center'>
+              <h2 className="text-ms font-bold text-(--overlay-bg)">Location:</h2>
+              <p className="text-md font-bold text-brand">📍 {provider.location?.address}, {provider.location?.city}, {provider.location?.country}</p>
+            </div>
           </div>
           <div className="flex-1 flex flex-col justify-center items-center border-2 border-(--border-focus) bg-(--glass-bg) text-center rounded-2xl shadow-(--shadow-lg)">
             <h2 className="text-ms font-bold text-(--overlay-bg)">Description:</h2>
