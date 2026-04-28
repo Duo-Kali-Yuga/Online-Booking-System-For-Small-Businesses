@@ -5,6 +5,7 @@ import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 import Label from "../../../components/ui/Label";
 import api from "../../../api/axios";
+import LoadingAnimation from "../../../components/layout/LoadingAnimation";
 
 
 
@@ -34,6 +35,8 @@ const RegisterForm = () => {
       console.error(err);
     }
   };
+
+  if(isLoading) return <LoadingAnimation/>
 
   return (
     <section>

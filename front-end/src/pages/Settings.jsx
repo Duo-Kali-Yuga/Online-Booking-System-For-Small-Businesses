@@ -4,6 +4,7 @@ import api from '../api/axios';
 import { FiCamera, FiUser, FiMail } from 'react-icons/fi';
 import ClientHeader from '../features/client/components/ClientHeader';
 import Button from '../components/ui/Button';
+import { API_BASE } from '../lib/public.constants';
 
 const Settings = () => {
   const { user, updateUserData } = useAuth(); // Assuming you added updateUserData to Context
@@ -49,7 +50,7 @@ const Settings = () => {
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
             <img
-              src={file ? URL.createObjectURL(file) : (user.avatar ? `http://localhost:5000${user.avatar}` : `https://ui-avatars.com/api/?name=${user.name}`)}
+              src={file ? URL.createObjectURL(file) : (user.avatar ? `${API_BASE}${user.avatar}` : `https://ui-avatars.com/api/?name=${user.name}`)}
               className="w-32 h-32 rounded-3xl object-cover border-4 border-slate-50 shadow-md"
               alt="Profile"
             />

@@ -6,6 +6,7 @@ import ProviderHeaderStart from '../../components/ProviderHeaderStart';
 import ReviewList from '../../components/ReviewList';
 import ClientHeader from '../../features/client/components/ClientHeader';
 import { API_BASE } from '../../lib/public.constants';
+import GlobalLoader from '../../components/layout/GlobalLoader';
 
 
 
@@ -110,7 +111,7 @@ const BookingPage = () => {
     }
   };
 
-  if (!provider) return <div className="p-10 text-center">Loading Profile...</div>;
+  if (!provider) return <GlobalLoader message="Loading Profile..."/>;
 
   if (provider.error) return (
     <div className="p-10 text-center">

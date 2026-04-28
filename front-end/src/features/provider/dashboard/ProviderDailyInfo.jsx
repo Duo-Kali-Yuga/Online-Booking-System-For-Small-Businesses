@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import api from '../../../api/axios';
 import DashboardStats from './DashboardStats';
 import CalendarAgenda from './CalendarAgenda';
+import LoadingAnimation from '../../../components/layout/LoadingAnimation';
 
 
 const ProviderDailyInfo = ({ title }) => {
@@ -23,7 +24,7 @@ const ProviderDailyInfo = ({ title }) => {
     loadDashboard();
   }, []);
 
-  if (isLoading) return <p className="p-6">Loading...</p>;
+  if (isLoading) return <LoadingAnimation/>
 
   return (
     <section>

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import Navbar from "./layouts/Navbar";
 
@@ -33,6 +33,9 @@ import DashboardAdmin from "./pages/admin/DashboardAdmin";
 // Shared
 import Settings from "./pages/Settings";
 import ServerWarmer from "./components/layout/ServerWarmer";
+import { AnimatePresence } from "framer-motion";
+import GlobalLoader from "./components/layout/GlobalLoader";
+import { useState } from "react";
 
 
 
@@ -40,11 +43,23 @@ import ServerWarmer from "./components/layout/ServerWarmer";
 
 
 function App() {
+
+  const [loading, setLoading] = useState(true)
+
+  setInterval(() => {
+    setLoading(false)
+  }, 3000)
+
   return (
     <Router>
       <AuthProvider>
         <ServerWarmer/>
 
+        <AnimatePresence>
+          {loading && <GlobalLoader/>}
+        </AnimatePresence>
+
+        {!loading && 
         <Routes>
 
           {/* PUBLIC  */}
@@ -113,7 +128,8 @@ function App() {
           {/*  FALLBACK  */}
           <Route path="*" element={<Navigate to="/" replace />} />
 
-        </Routes>
+          </Routes>
+        }
 
       </AuthProvider>
     </Router>

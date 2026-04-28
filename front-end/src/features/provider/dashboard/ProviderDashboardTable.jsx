@@ -1,6 +1,7 @@
 import { useProviderDashboard } from "./useProviderDashboard";
 import AppointmentsTable from "./AppointmentsTable";
 import ProviderQuickActions from "../../../pages/provider/ProviderQuickActions";
+import LoadingAnimation from "../../../components/layout/LoadingAnimation";
 
 export default function ProviderDashboardTable({
   title,
@@ -13,7 +14,7 @@ export default function ProviderDashboardTable({
     deleteAppointment,
   } = useProviderDashboard(setStats);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <LoadingAnimation/>
 
   return (
     <section>

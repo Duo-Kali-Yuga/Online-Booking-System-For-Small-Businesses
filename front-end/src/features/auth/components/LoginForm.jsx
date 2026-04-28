@@ -4,6 +4,7 @@ import { useAuth } from "../../../context/AuthContext";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 import Label from "../../../components/ui/Label";
+import LoadingAnimation from "../../../components/layout/LoadingAnimation";
 
 
 
@@ -38,6 +39,8 @@ const LoginForm = () => {
       setIsLoading(false)
     }
   };
+
+  if(isLoading) return <LoadingAnimation/>
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

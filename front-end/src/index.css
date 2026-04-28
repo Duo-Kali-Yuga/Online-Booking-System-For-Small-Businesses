@@ -141,6 +141,52 @@
   @apply bg-conic-120 via-(--glass-bg) via-85% from-(--brand-primary-light) to-(--overlay-bg)  py-3 rounded-xl font-bold hover:bg-slate-400 transition-all  shadow-(--shadow-lg) hover:shadow-2xs duration-600;
 }
 
+/* Define the full screen container for the loading animation */
+.loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); /* semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* The spinner */
+.loading-spinner {
+  border: 16px solid #f3f3f3; /* Light gray background */
+  border-top: 16px solid #3498db; /* Blue color for the spinning effect */
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 2s linear infinite;
+}
+
+/* The loading text */
+.loading-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-top: 20px;
+  animation: fadeIn 1.5s ease-in-out infinite;
+}
+
+/* Animation for spinner rotation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Animation for text fading effect */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 
 
 
