@@ -3,6 +3,7 @@ import api from "../../api/axios";
 import Button from "../../components/ui/Button";
 import ProviderHeader from "../../features/provider/components/ProviderHeader";
 import Label from "../../components/ui/Label";
+import GlobalLoader from "../../components/layout/GlobalLoader";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -100,6 +101,8 @@ const AvailabilityManager = () => {
   const hasSchedule = schedules.some(
     (s) => s.dayOfWeek === editingDay
   );
+
+  if (loading) return <GlobalLoader message='Loading Availability...'/>
   
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-6 flex flex-col gap-8">
