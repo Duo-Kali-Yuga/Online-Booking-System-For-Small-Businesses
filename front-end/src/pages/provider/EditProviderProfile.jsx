@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import ProviderHeader from '../../features/provider/components/ProviderHeader';
 import Button from '../../components/ui/Button';
 import { API_BASE, INDUSTRIES } from '../../lib/public.constants';
+import GlobalLoader from '../../components/layout/GlobalLoader';
 
 
 
@@ -208,7 +209,7 @@ const EditProviderProfile = () => {
     }
   };
 
-  if (loading) return <div className="p-10 text-center">Loading settings...</div>;
+  if (loading) return <GlobalLoader message='Loading Profile...'/>
 
   console.log(formData)
   return (
@@ -332,7 +333,6 @@ const EditProviderProfile = () => {
             </select>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Address Input */}
             <div>
               <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
@@ -380,7 +380,6 @@ const EditProviderProfile = () => {
                 })}
               />
             </div>
-          </div>
             <div>
               <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
                 <FiPhone /> Contact Phone

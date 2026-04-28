@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Button from "../../../components/ui/Button";
+import GlobalLoader from "../../../components/layout/GlobalLoader";
 
 export default function ServiceForm({ onSubmit, loading }) {
   const [formData, setFormData] = useState({
@@ -20,9 +21,11 @@ export default function ServiceForm({ onSubmit, loading }) {
     }
   };
 
+  if (loading) return <GlobalLoader message='Loading Availability...'/>
+
   return (
     <motion.form
-      initial={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       onSubmit={handleSubmit}
       className=" p-6 rounded-xl shadow-sm border mb-10 grid grid-cols-1 md:grid-cols-4 gap-4 items-end design-bgRight"

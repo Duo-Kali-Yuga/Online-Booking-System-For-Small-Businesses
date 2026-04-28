@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { motion } from 'framer-motion';
+import { INDUSTRIES } from '../../lib/public.constants';
+
 
 
 const SetupProviderProfile = () => {
@@ -16,9 +18,6 @@ const SetupProviderProfile = () => {
     }
   });
 
-
-
-  const industries = ['healthcare', 'beauty', 'education', 'consulting', 'fitness', 'other'];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,16 +57,13 @@ const SetupProviderProfile = () => {
               className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
               onChange={(e) => setFormData({...formData, industry: e.target.value})}
             >
-              {
-                industries.map((industry, index) => (
-                  <option key={index} value={industry}>{industry}</option>
-                ))
-              }
-              {/* <option value="other">Other</option>
-              <option value="doctor">Doctor</option>
-              <option value="barber">Barber</option>
-              <option value="salon">Salon</option>
-              <option value="consultant">Consultant</option> */}
+              <option value="other">Other</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="beauty">Beauty</option>
+              <option value="education">Education</option>
+              <option value="consulting">Consulting</option>
+              <option value="fitness">Fitness</option>
+              <option value="consulting">Consulting</option>
             </select>
           </div>
 
