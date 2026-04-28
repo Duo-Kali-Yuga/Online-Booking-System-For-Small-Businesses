@@ -5,7 +5,7 @@ const api = axios.create({
   // baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5002/api',
 
   // Use your Internet backend port
-  baseURL: "https://bookingbusinesses.onrender.com",
+  baseURL: "https://booking-businesses.onrender.com",
 });
 
 // Add a request interceptor to include the JWT token
