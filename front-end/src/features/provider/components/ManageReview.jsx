@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import { FiMessageSquare, FiCheckCircle } from 'react-icons/fi';
 import ProviderHeader from './ProviderHeader';
 import Button from '../../../components/ui/Button';
+import GlobalLoader from '../../../components/layout/GlobalLoader';
 
 
 
@@ -40,7 +41,7 @@ const ManageReviews = () => {
     }
   };
 
-  if (loading) return <div className="p-10 text-center">Loading feedback...</div>;
+  if (loading) return <GlobalLoader message="Loading feedback..."/>
 
   return (
     <div className="max-w-4xl mx-auto p-6">

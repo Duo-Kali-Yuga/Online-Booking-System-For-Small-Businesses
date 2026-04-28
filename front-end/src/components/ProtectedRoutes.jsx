@@ -1,12 +1,14 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import LoadingAnimation from "./layout/LoadingAnimation";
+
 
 export default function ProtectedRoute({ children, allowedRoles }) {
   const { user, loading } = useAuth();
 
   // 🔥 WAIT until auth loads
   if (loading) {
-    return <div className="p-10 text-center">Loading...</div>;
+    return <LoadingAnimation/>
   }
 
   if (!user) {

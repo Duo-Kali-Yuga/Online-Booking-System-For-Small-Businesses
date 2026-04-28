@@ -8,6 +8,7 @@ import { API_BASE } from '../../lib/public.constants';
 import AppointmentCard from '../../features/provider/dashboard/AppointmentCard';
 import ClientHeader from '../../features/client/components/ClientHeader';
 import PastAppointmentCard from '../../features/client/components/PastAppointmentCard';
+import GlobalLoader from '../../components/layout/GlobalLoader';
 
 
 
@@ -83,6 +84,8 @@ const ClientDashboard = () => {
   const pastOrCancelled = appointments.filter(a => 
     dayjs(a.date).isBefore(dayjs()) || a.status === 'cancelled'
   );
+
+  if (loading) return <GlobalLoader message="Board Profile..."/>;
 
   return (
     <div className="max-w-5xl mx-auto p-6">

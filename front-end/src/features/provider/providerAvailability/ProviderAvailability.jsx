@@ -73,7 +73,7 @@ const ProviderAvailability = () => {
     updateDay('breaks', newBreaks);
   };
 
-  if (loading) return <div className="p-10 text-center">Loading schedule...</div>;
+  if (loading) return <GlobalLoader message="Loading schedule..."/>
 
   return (
     <div className="max-w-6xl mx-auto p-4">
