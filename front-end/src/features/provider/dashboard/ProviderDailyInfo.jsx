@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import api from '../../../api/axios';
 import DashboardStats from './DashboardStats';
 import CalendarAgenda from './CalendarAgenda';
-import LoadingAnimation from '../../../components/layout/LoadingAnimation';
+import GlobalLoader from '../../../components/layout/GlobalLoader';
 
 
 const ProviderDailyInfo = ({ title }) => {
@@ -24,7 +24,7 @@ const ProviderDailyInfo = ({ title }) => {
     loadDashboard();
   }, []);
 
-  if (isLoading) return <LoadingAnimation/>
+  if (isLoading) return <GlobalLoader/>
 
   return (
     <section>

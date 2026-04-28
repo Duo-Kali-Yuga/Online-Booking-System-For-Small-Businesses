@@ -5,7 +5,7 @@ import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 import Label from "../../../components/ui/Label";
 import api from "../../../api/axios";
-import LoadingAnimation from "../../../components/layout/LoadingAnimation";
+import GlobalLoader from "../../../components/layout/GlobalLoader";
 
 
 
@@ -36,7 +36,7 @@ const RegisterForm = () => {
     }
   };
 
-  if(isLoading) return <LoadingAnimation/>
+  if(isLoading) return <GlobalLoader/>
 
   return (
     <section>
@@ -95,6 +95,12 @@ const RegisterForm = () => {
         Already have an account?{' '}
         <Link to="/login" className="text-blue-600 font-bold hover:underline">
           Login here
+        </Link>
+      </p>
+      <p className="mt-2.5 text-center text-slate-500 text-sm">
+        Return to {' '}
+        <Link to="/" className="text-blue-600 font-bold hover:underline">
+          Home Page
         </Link>
       </p>
     </section>

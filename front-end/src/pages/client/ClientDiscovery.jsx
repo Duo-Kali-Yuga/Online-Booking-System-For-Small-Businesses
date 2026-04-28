@@ -6,7 +6,6 @@ import { INDUSTRIES } from '../../lib/public.constants';
 import ProviderSearchForm from '../../features/client/components/ProviderSearchForm';
 import ProviderList from '../../features/client/components/ProviderList';
 import ClientHeader from '../../features/client/components/ClientHeader';
-import LoadingAnimation from '../../components/layout/LoadingAnimation';
 import GlobalLoader from '../../components/layout/GlobalLoader';
 
 
