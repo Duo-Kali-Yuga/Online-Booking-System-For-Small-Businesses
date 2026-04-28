@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import LoadingAnimation from "./layout/LoadingAnimation";
+import GlobalLoader from "./layout/GlobalLoader";
 
 
 export default function ProtectedRoute({ children, allowedRoles }) {
@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
 
   // 🔥 WAIT until auth loads
   if (loading) {
-    return <LoadingAnimation/>
+    return <GlobalLoader/>
   }
 
   if (!user) {

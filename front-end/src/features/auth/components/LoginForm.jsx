@@ -4,7 +4,7 @@ import { useAuth } from "../../../context/AuthContext";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 import Label from "../../../components/ui/Label";
-import LoadingAnimation from "../../../components/layout/LoadingAnimation";
+import GlobalLoader from "../../../components/layout/GlobalLoader";
 
 
 
@@ -40,7 +40,7 @@ const LoginForm = () => {
     }
   };
 
-  if(isLoading) return <LoadingAnimation/>
+  if(isLoading) return <GlobalLoader/>
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -67,6 +67,12 @@ const LoginForm = () => {
         Don't have an account?{' '}
         <Link to="/register" className="text-blue-600 font-bold hover:underline">
           Create one
+        </Link>
+      </p>
+      <p className="mt-2.5 text-center text-slate-500 text-sm">
+        Return to {' '}
+        <Link to="/" className="text-blue-600 font-bold hover:underline">
+          Home Page
         </Link>
       </p>
     </form>
