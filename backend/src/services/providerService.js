@@ -14,7 +14,7 @@ export const createProviderProfile = async (userId, data) => {
 };
 
 export const getMyProviderProfile = async (userId) => {
-  return await Provider.findOne({ user: userId }).populate("user", "name email");
+  return await Provider.findOne({ user: userId }).populate("user", "name email avatar");
 };
 
 

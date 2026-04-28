@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { FiCamera, FiMapPin, FiBriefcase, FiPhone, FiAlignLeft, FiAlertTriangle } from 'react-icons/fi';
+import { FiCamera, FiMapPin, FiBriefcase, FiPhone, FiAlignLeft, FiAlertTriangle, FiUser } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import ProviderHeader from '../../features/provider/components/ProviderHeader';
 import Button from '../../components/ui/Button';
+import { API_BASE, INDUSTRIES } from '../../lib/public.constants';
 
 
 
@@ -11,25 +12,33 @@ const EditProviderProfile = () => {
   const [file, setFile] = useState(null);
   const [formData, setFormData] = useState({
     businessName: '',
-    bio: '',
-    location: '',
+    description: '',
+    location: {
+      city: '',
+      country: '',
+      address: ''
+    },
     avatar: '',
     phone: ''
   });
+
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    avatar: ""
+  })
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [avatarFileP, setAvatarFileP] = useState(null);
+  const [previewUrlP, setPreviewUrlP] = useState(null);
   
-  // --- MISSING STATES ADDED HERE ---
-  const [providerName, setProviderName] = useState('');
-  const [settings, setSettings] = useState(null);
 
-  const { updateUserData } = useAuth();
+  const { user, updateUserData } = useAuth();
 
 
-  const industries = ['healthcare', 'beauty', 'education', 'consulting', 'fitness', 'other'];
+  const industries = INDUSTRIES
 
   
   useEffect(() => {
@@ -38,22 +47,25 @@ const EditProviderProfile = () => {
         const res = await api.get('/providers/me');
         const p = res.data.data || res.data; 
 
+        console.log(p.location)
+
         setFormData({
           businessName: p.businessName || '',
-          bio: p.bio || '',
-          location: p.location || '',
+          description: p.description || '',
+          location: p.location || {
+            city: '',
+            country: '',
+            address: ''
+          },
           avatar: p.avatar || '',
           phone: p.phone || '',
           industry: p.industry || 'other'
         });
 
-        // These now have corresponding states to update!
-        if (p.user) {
-          setProviderName(p.user.name || ''); 
-        }
-        if (p.settings) {
-          setSettings(p.settings);
-        }
+        setUserInfo({
+          name: p.user.name || "",
+          avatar: p.user.avatar || ""
+        })
 
       } catch (err) {
         console.error("Failed to load profile", err);
@@ -65,28 +77,52 @@ const EditProviderProfile = () => {
   }, []);
 
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e, val) => {
     const file = e.target.files[0];
+
+    console.log(file)
+
     if (file) {
-      setAvatarFile(file); // This is where 'avatarFile' comes from!
-      setPreviewUrl(URL.createObjectURL(file)); // This creates a local preview for the user to see
+
+      if(val === "user") {
+        setAvatarFile(file); // This is where 'avatarFile' comes from!
+        setPreviewUrl(URL.createObjectURL(file)); // This creates a local preview for the user to see
+      }
+      
+      if(val === "provider") {
+        setAvatarFileP(file);
+        setPreviewUrlP(URL.createObjectURL(file));
+
+      }
     }
   };
 
-  const handleRemovePhoto = async () => {
+  const handleRemovePhoto = async (val) => {
     const confirm = window.confirm("Are you sure you want to remove your profile photo?");
     if (!confirm) return;
 
     try {
-      // 1. Tell backend to set avatar to an empty string
-      await api.patch('/users/me', { avatar: "" });
-
-      // 2. Clear local states
-      setAvatarFile(null);
-      setPreviewUrl(null);
-
-      // 3. Update global AuthContext so Navbar updates
-      updateUserData({ avatar: "" });
+      if(val === "user") {
+        // 1. Tell backend to set avatar to an empty string
+        await api.patch('/users/me', { avatar: "" });
+  
+        // 2. Clear local states
+        setAvatarFile(null);
+        setPreviewUrl(null);
+  
+        // 3. Update global AuthContext so Navbar updates
+        updateUserData({ avatar: "" });
+        
+      }
+      
+      if(val === "provider") {
+        // 1. Tell backend to set avatar to an empty string
+        await api.patch('/providers/profile', { avatar: "" });
+  
+        // 2. Clear local states
+        setAvatarFileP(null);
+        setPreviewUrlP(null);
+      }
 
       alert("Photo removed.");
     } catch (err) {
@@ -99,32 +135,53 @@ const EditProviderProfile = () => {
     setSaving(true);
 
     const userData = new FormData();
-    userData.append('name', providerName);
-    // Only append if there is a new file to upload
-    if (avatarFile) userData.append('avatar', avatarFile);
+    userData.append('name', userInfo.name);
+    if (avatarFile) userData.append('avatar', avatarFile);  // User Avatar
 
-    const businessData = {
-      businessName: formData.businessName,
-      bio: formData.bio,
-      industry: formData.industry,
-      location: formData.location, // Ensure the object we fixed earlier is included
-      settings: settings 
-    };
+    const businessData = new FormData();
+    const newLocation = new FormData();
+
+
+    for (let [key, val] of Object.entries(formData)) {
+      if (key === "avatar" && avatarFileP) {
+        // If it's the provider avatar, append it
+        businessData.append("avatar", avatarFileP);
+      } else if (key === "location") {
+
+        businessData.append("location[address]", val.address);
+        businessData.append("location[city]", val.city);
+        businessData.append("location[country]", val.country);
+      } else {
+        // Append other form data normally
+        businessData.append(`${key}`, val);
+      }
+    }
+
+    console.log("bussi",businessData)
 
     try {
-      // 1. Update User Identity
-      const userRes = await api.patch('/users/me', userData);
-      
-      // 2. Update Provider Business Info
-      const providerRes = await api.patch('/providers/profile', businessData);
-
-    if (updateUserData) {
-      updateUserData({
-        name: providerName,
-        avatar: userRes.data.data.avatar // Use the path returned by the backend
+      // Update User Identity
+      const userRes = await api.patch('/users/me', userData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
-    }
-      
+
+      // Update Provider Business Info
+      const providerRes = await api.patch('/providers/profile', businessData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      if (updateUserData) {
+        updateUserData({
+          name: userRes.data.data.name,
+          avatar: userRes.data.data.avatar
+        });
+      }
+
+      setFormData({
+        ...formData,
+        avatar: providerRes.data.data.avatar  // Update the avatar field in the formData after successful API response
+      });
+
       alert("Professional profile and identity updated!");
     } catch (err) {
       console.error("Save Error Details:", err.response?.data);
@@ -133,7 +190,6 @@ const EditProviderProfile = () => {
       setSaving(false);
     }
   };
-
   const [confirmName, setConfirmName] = useState('');
 
   const handleDeleteAccount = async () => {
@@ -154,6 +210,7 @@ const EditProviderProfile = () => {
 
   if (loading) return <div className="p-10 text-center">Loading settings...</div>;
 
+  console.log(formData)
   return (
     <div className="max-w-3xl mx-auto p-6 flex flex-col gap-3">
 
@@ -167,13 +224,10 @@ const EditProviderProfile = () => {
         <div className="bg-white p-8 rounded-3xl shadow-sm  flex flex-col items-center slideUp">
 
           <div className="flex flex-col items-center gap-2">
+            <h2 className='text-(--brand-primary) border-b-2 rounded-2xl px-3'>User Avatar</h2>
             <div className="relative border-2 border-slate-100 rounded-3xl">
               <img 
-                src={
-                    previewUrl || 
-                    (formData.avatar ? `http://localhost:5000${formData.avatar}` : null) || 
-                    `https://ui-avatars.com/api/?name=${formData.businessName || 'User'}`
-                  } 
+                src={previewUrl ? URL.createObjectURL(avatarFile) : (user.avatar ? `${API_BASE}${user.avatar}` : `https://ui-avatars.com/api/?name=${user.name}`)}
                   className="w-32 h-32 rounded-3xl object-cover " 
                   alt="Profile"
                   className="w-32 h-32 rounded-3xl object-cover"
@@ -185,7 +239,7 @@ const EditProviderProfile = () => {
                   type="file" 
                   className="hidden" 
                   accept="image/*" 
-                  onChange={handleFileChange} 
+                  onChange={(e) => handleFileChange(e,"user")} 
                 />
               </label>
             </div>
@@ -193,7 +247,42 @@ const EditProviderProfile = () => {
             {(formData.avatar || previewUrl) && (
               <button 
                 type="button"
-                onClick={handleRemovePhoto}
+                onClick={handleRemovePhoto.bind(this, "user")}
+                className="text-xs font-bold text-red-500 hover:text-red-700 uppercase tracking-widest mt-2 cursor-pointer"
+              >
+                Remove Photo
+              </button>
+            )}
+          </div>
+
+        </div>
+        {/* Provider Avatar Upload Section */}
+        <div className="bg-white p-8 rounded-3xl shadow-sm  flex flex-col items-center slideUp">
+          <h2 className='text-(--brand-primary) border-b-2 rounded-2xl px-3'>Provider Avatar</h2>
+          <div className="flex flex-col items-center gap-2">
+            <div className="relative border-2 border-slate-100 rounded-3xl">
+              <img 
+                src={previewUrlP ? URL.createObjectURL(avatarFileP) : (formData.avatar ? `${API_BASE}${formData.avatar}` : `https://ui-avatars.com/api/?name=${user.name}`)}
+                  className="w-32 h-32 rounded-3xl object-cover " 
+                  alt="Profile"
+                  className="w-32 h-32 rounded-3xl object-cover"
+                className="w-32 h-32 rounded-3xl object-cover" 
+              />
+              <label className="absolute bottom-0 right-0 cursor-pointer bg-blue-600 p-2 rounded-xl">
+                <FiCamera className="text-white" />
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={(e) => handleFileChange(e, "provider")} 
+                />
+              </label>
+            </div>
+
+            {(formData.avatar || previewUrlP) && (
+              <button 
+                type="button"
+                onClick={handleRemovePhoto.bind(this, "provider")}
                 className="text-xs font-bold text-red-500 hover:text-red-700 uppercase tracking-widest mt-2 cursor-pointer"
               >
                 Remove Photo
@@ -208,6 +297,17 @@ const EditProviderProfile = () => {
 
         {/* Core Info */}
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6 slideUp">
+          <div>
+            <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
+              <FiUser /> User Name
+            </label>
+            <input 
+              type="text" 
+              className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500"
+              value={userInfo.name}
+              onChange={(e) => setUserInfo({...userInfo, name: e.target.value})}
+            />
+          </div>
           <div>
             <label className="flex items-center gap-2 text-xs font-bold text-slate-800 uppercase mb-2">
               <FiBriefcase /> Business Name
@@ -301,8 +401,8 @@ const EditProviderProfile = () => {
             <textarea 
               rows="4"
               className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500"
-              value={formData.bio}
-              onChange={(e) => setFormData({...formData, bio: e.target.value})}
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
               placeholder="Describe your services..."
             />
           </div>

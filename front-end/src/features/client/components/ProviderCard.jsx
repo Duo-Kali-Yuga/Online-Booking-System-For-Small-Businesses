@@ -11,13 +11,13 @@ const ProviderCard = ({ provider }) => {
   return (
     <motion.div whileHover={{ y: -5 }} className="bg-(--bg-card) rounded-2xl overflow-hidden shadow-sm border border-(--border-focus) flex flex-col ">
 
-      <div className="h-32 bg-linear-to-t from-(--brand-primary) via-40% via-(--brand-light) to-(--brand-primary-hover) flex items-center justify-center">
+      <div className="h-20 bg-linear-to-t from-(--brand-primary) via-40% via-(--brand-light) to-(--brand-primary-hover) flex items-center justify-center">
         <span className="text-(--overlay-bg) text-4xl font-bold">
           {provider.businessName.charAt(0)}
         </span>
       </div>
 
-      <div className="p-6 flex-1 flex flex-col">
+      <div className="px-6 py-2 flex-1 flex flex-col">
         <div className="flex justify-between items-start mb-2">
           <h2 className="text-xl font-bold text-slate-800">{provider.businessName}</h2>
           <span className="bg-blue-100 text-blue-700 text-xs font-bold p-2 rounded-full">

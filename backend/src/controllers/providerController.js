@@ -41,7 +41,7 @@ export const getMyProvider = async (req, res) => {
     if (!provider) {
       return res.status(404).json({ message: "Provider not found. Please complete setup." });
     }
-
+  
     res.json(provider);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -210,9 +210,15 @@ export const upload = multer({ storage });
 export const updateProviderProfile = async (req, res) => {
   try {
     const updateData = { ...req.body };
+    console.log("Incoming Body:", req.body.location);
+    console.log("Incoming File:", req.file);
     
     // We remove the req.file / avatar logic here because 
     // the frontend is sending the file to the User controller instead.
+
+    if (req.file) {
+      updateData.avatar = `/uploads/avatars/${req.file.filename}`;
+    }
 
     const provider = await Provider.findOneAndUpdate(
       { user: req.user._id },
@@ -233,3 +239,35 @@ export const updateProviderProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const updateMe = async (req, res) => {
+  try {
+    console.log("Incoming Body:", req.body);
+    console.log("Incoming File:", req.file);
+
+    const updateData = {};
+
+    if (req.file) {
+      updateData.avatar = `/uploads/avatars/${req.file.filename}`;
+    }
+
+    const user = await Provider.findByIdAndUpdate(
+      req.user._id,
+      updateData,
+      { 
+        returnDocument: 'after',
+        runValidators: true 
+      }
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, data: user });
+  } catch (error) {
+    console.error("UpdateMe Error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+

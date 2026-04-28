@@ -27,7 +27,11 @@ const providerSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "https://ui-avatars.com/api/?background=random" // Default if no image uploaded
+      default: ""
+    },
+    phone: {
+      type: String,
+      default: ""
     },
     ratingStats: {
       averageRating: { type: Number, default: 0 },

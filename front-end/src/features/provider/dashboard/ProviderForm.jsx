@@ -32,8 +32,8 @@ const ProviderForm = ({
             onChange={(e) => setFormData({...formData, industry: e.target.value})}
           >
             {
-              INDUSTRIES.map((ind) => (
-                <option key={ind} value={ind}>{ind}</option>
+              INDUSTRIES.map((ind, index) => (
+                <option key={index} value={ind}>{ind}</option>
               ))
             }
           </select>
