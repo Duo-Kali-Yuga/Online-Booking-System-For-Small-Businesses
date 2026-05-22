@@ -4,7 +4,7 @@ import { FiCamera, FiMapPin, FiBriefcase, FiPhone, FiAlignLeft, FiAlertTriangle,
 import { useAuth } from '../../context/AuthContext';
 import ProviderHeader from '../../features/provider/components/ProviderHeader';
 import Button from '../../components/ui/Button';
-import { API_BASE, INDUSTRIES } from '../../lib/public.constants';
+import { API_BASE } from '../../lib/public.constants';
 import GlobalLoader from '../../components/layout/GlobalLoader';
 
 
@@ -23,10 +23,14 @@ const EditProviderProfile = () => {
     phone: ''
   });
 
+  
   const [userInfo, setUserInfo] = useState({
     name: "",
     avatar: ""
   })
+  
+
+
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -39,7 +43,7 @@ const EditProviderProfile = () => {
   const { user, updateUserData } = useAuth();
 
 
-  const industries = INDUSTRIES
+  const INDUSTRIES = ['other','healthcare', 'beauty', 'education', 'consulting', 'fitness'];
 
   
   useEffect(() => {

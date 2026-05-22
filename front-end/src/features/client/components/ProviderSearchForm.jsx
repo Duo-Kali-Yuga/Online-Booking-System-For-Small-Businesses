@@ -1,10 +1,12 @@
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
-import { INDUSTRIES } from "../../../lib/public.constants";
+// import { INDUSTRIES } from "../../../lib/public.constants";
 
 
 
 const ProviderSearchForm = ({ filters, setFilters, onSubmit, loading }) => {
+  
+  const INDUSTRIES = ['other','healthcare', 'beauty', 'education', 'consulting', 'fitness'];
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col md:flex-row gap-5 mb-12 bg-(--bg-card) px-4 py-6 rounded-2xl shadow-sm border border-(--bg-card)">

@@ -56,6 +56,9 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
+app.get("api/", () => {
+  console.log("Server Up...")
+})
 
 
 

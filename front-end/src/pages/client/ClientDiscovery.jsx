@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { INDUSTRIES } from '../../lib/public.constants';
+// import { INDUSTRIES } from '../../lib/public.constants';
 import ProviderSearchForm from '../../features/client/components/ProviderSearchForm';
 import ProviderList from '../../features/client/components/ProviderList';
 import ClientHeader from '../../features/client/components/ClientHeader';
