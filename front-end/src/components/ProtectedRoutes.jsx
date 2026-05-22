@@ -6,7 +6,6 @@ import GlobalLoader from "./layout/GlobalLoader";
 export default function ProtectedRoute({ children, allowedRoles }) {
   const { user, loading } = useAuth();
 
-  // 🔥 WAIT until auth loads
   if (loading) {
     return <GlobalLoader/>
   }
