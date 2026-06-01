@@ -13,7 +13,7 @@ The app connects service providers (like doctors, barbers, etc.) with clients wh
 
 ⸻
 
-1. Admin (Service Provider) Functions
+1. Provider Functions
 	•	Sign Up / Login: Register as a service provider for a specific industry.
 	•	Profile Setup: Add business name, industry (doctor, barbershop, etc.), location, and contact info.
 	•	Service Management:
@@ -28,6 +28,7 @@ The app connects service providers (like doctors, barbers, etc.) with clients wh
 	•	Notify clients about changes.
 	•	Analytics / Dashboard (optional):
 	•	Track number of appointments, revenue, and popular services.
+	manage name, business name, avatar, company avatar
 
 ⸻
 
@@ -45,14 +46,15 @@ The app connects service providers (like doctors, barbers, etc.) with clients wh
 	•	Cancel or reschedule if needed.
 	•	Notifications:
 	•	Receive reminders about upcoming appointments.
+	•	Reviews & Ratings: Clients can rate the service; provider can respond.
+	manage name and avatar.
 
 ⸻
 
-3. Optional Admin / Client Shared Functions
-	•	Reviews & Ratings: Clients can rate the service; admins can respond.
-	•	Payment Integration:
-	•	Clients pay through the app.
+3. Admin Functions
 	•	Admins can view transaction history.
+	Manage clients and provider.
+	Manage service
 
 ⸻
 
