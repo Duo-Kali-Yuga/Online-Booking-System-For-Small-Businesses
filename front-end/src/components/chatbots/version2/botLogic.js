@@ -170,7 +170,7 @@ export async function getBotResponse(message, user) {
     if (role === "client") {
       return {
         text: "I'll take you to the booking page.",
-        action: "/app",
+        action: "/client/dashboard",
       };
     }
     return { text: "Only clients can book appointments." };
@@ -178,10 +178,12 @@ export async function getBotResponse(message, user) {
 
   // --- CANCEL ---
   if (msg.includes("cancel")) {
-    return {
-      text: "Go to your dashboard to cancel an appointment.",
-      action: "/dashboard",
-    };
+    if (role === "client") {
+      return {
+        text: "I'll take you to the booking page.",
+        action: "/client/dashboard",
+      };
+    }
   }
 
   // --- RESCHEDULE ---
