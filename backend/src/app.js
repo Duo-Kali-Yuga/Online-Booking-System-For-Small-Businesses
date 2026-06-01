@@ -22,8 +22,8 @@ const app = express();
 
 
 const allowedOrigins = [
-  "mongodb://localhost:27017/booking_system", // Local Version
-  // 'https://booking-businesses.vercel.app', // Internet 
+  //"mongodb://localhost:27017/booking_system", // Local Version
+  'https://booking-businesses.vercel.app', // Internet 
 ];
 
 app.use(cors({
