@@ -47,10 +47,24 @@ export const bookAppointment = async (req, res) => {
 
     // 3. Mark the historical record state as cancelled and create the history link
     if (rescheduleId) {
-      await Appointment.findByIdAndUpdate(rescheduleId, { 
-        status: 'cancelled', 
-        rescheduledTo: newAppointment._id 
-      });
+      const oldAppointment = await Appointment.findById(rescheduleId)
+        .populate("provider")  // <-- populate provider info
+        .populate("client");   // optional, if you want client info
+      if (!oldAppointment) {
+        return res.status(404).json({ message: "Original appointment not found" });
+      }
+
+      targetClientId = oldAppointment.client._id;
+
+      // If a provider is logged in, auto-confirm. If client, pending.
+      if (activeProvider) {
+        dynamicStatus = "confirmed";
+      } else {
+        dynamicStatus = "pending";
+      }
+
+      // oldApptData will now include provider info
+      bookingData.provider = oldAppointment.provider._id;
     }
 
     return successResponse(res, newAppointment, "Appointment confirmed", 201);

@@ -1,6 +1,53 @@
 import User from '../models/User.js';
-import { put, del } from '@vercel/blob';
-import path from 'path';
+
+// Inside updateMe in userController.js
+// export const updateMe = async (req, res) => {
+//   try {
+//     const { name, avatar } = req.body;
+//     const updateData = { name };
+
+//     // If a new file is uploaded, use it
+//     if (req.file) {
+//       updateData.avatar = `/uploads/avatars/${req.file.filename}`;
+//     } 
+//     // If the user explicitly sent an empty string to remove the photo
+//     else if (avatar === "") {
+//       updateData.avatar = "";
+//     }
+
+//     const updatedUser = await User.findByIdAndUpdate(
+//       req.user._id,
+//       updateData,
+//       { new: true }
+//     );
+
+//     res.json({ success: true, data: updatedUser });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
+// export const updateMe = async (req, res) => {
+//   try {
+//     const updateData = { name: req.body.name };
+
+//     // This is where the avatar is actually saved to the User document
+//     if (req.file) {
+//       updateData.avatar = `/uploads/avatars/${req.file.filename}`;
+//     }
+
+//     const user = await User.findByIdAndUpdate(
+//       req.user._id,
+//       updateData,
+//       { returnDocument: 'after' }
+//     );
+
+//     res.json({ success: true, data: user });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 
 export const updateMe = async (req, res) => {
   try {
@@ -10,36 +57,8 @@ export const updateMe = async (req, res) => {
     const updateData = {};
     if (req.body.name) updateData.name = req.body.name;
 
-    // Handle avatar upload with Vercel Blob
     if (req.file) {
-      // Find existing user to check for old avatar
-      const existingUser = await User.findById(req.user._id);
-      
-      // Delete old avatar from Vercel Blob if it exists
-      if (existingUser?.avatar && existingUser.avatar.includes('blob.vercel-storage.com')) {
-        try {
-          await del(existingUser.avatar, { token: process.env.BLOB_READ_WRITE_TOKEN });
-          console.log('✅ Deleted old avatar from Vercel Blob');
-        } catch (error) {
-          console.error('Failed to delete old avatar:', error);
-        }
-      }
-      
-      // Generate unique filename for the new avatar
-      const fileExtension = path.extname(req.file.originalname);
-      const filename = `users/user-${req.user._id}-${Date.now()}${fileExtension}`;
-      
-      // Upload to Vercel Blob (PUBLIC access)
-      const blob = await put(filename, req.file.buffer, {
-        access: 'public',  // ← Public access for profile pictures
-        token: process.env.BLOB_READ_WRITE_TOKEN,
-        addRandomSuffix: false,
-        contentType: req.file.mimetype
-      });
-      
-      // Save the blob.url instead of local path
-      updateData.avatar = blob.url;
-      console.log('✅ Avatar uploaded to:', blob.url);
+      updateData.avatar = `/uploads/avatars/${req.file.filename}`;
     }
 
     const user = await User.findByIdAndUpdate(
