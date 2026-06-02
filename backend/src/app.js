@@ -16,30 +16,27 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
-
-
-
 const app = express();
 
-
+// Allowed origins for CORS
 const allowedOrigins = [
-  "https://booking-businesses.vercel.app",
-  //"mongodb://localhost:27017/booking_system",
-  //"http://localhost:27017", // Local frontend
-  //"http://localhost:5173", // Local frontend
-  //"http://localhost:3000", // Alternative local frontend
-  "https://booking-businesses.vercel.app", // Production frontend
+  "https://booking-businesses.vercel.app",     // Production frontend
+  "http://localhost:5173",                     // Local Vite dev server
+  "http://localhost:3000",                     // Alternative local port
+  "http://localhost:5000",                     // If frontend runs on 5000
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      console.log(`Blocked origin: ${origin}`);
       return callback(new Error(msg), false);
     }
+    console.log(`Allowed origin: ${origin}`);
     return callback(null, true);
   },
   credentials: true,
@@ -47,11 +44,14 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Body parsing middleware
 app.use(express.json());
 app.use(logger);
+
+// Static files (for local uploads - consider migrating to Vercel Blob)
 app.use('/uploads', express.static('uploads'));
 
-// API
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/providers", providerRoutes);
 app.use("/api/services", serviceRoutes);
@@ -62,25 +62,27 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
-app.get("api/", () => {
-  console.log("Server Up...")
-})
 
+// Health check endpoint (useful for monitoring)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", message: "Server is running" });
+});
 
+// Root endpoint
+app.get("/", (req, res) => {
+  res.send("API is running...");
+});
 
-//General Error Handler
-app.use(errorHandler);
-
+// Ensure uploads directory exists
 const uploadDir = './uploads';
-if (!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir);
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+// Error handler (should be last)
+app.use(errorHandler);
 
 export default app;
