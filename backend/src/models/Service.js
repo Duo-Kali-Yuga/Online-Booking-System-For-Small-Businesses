@@ -23,6 +23,10 @@ const serviceSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    avatar: {
+      type: String,
+      default: ""
+    }
   },
   { timestamps: true }
 );

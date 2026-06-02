@@ -1,5 +1,6 @@
 import { successResponse } from "../utils/response.js";
 import * as analyticsService from "../services/analyticsService.js";
+import * as clientService from "../services/clientService.js";
 
 export const getDashboard = async (req, res) => {
   const data = await analyticsService.getDashboardStats(req.user._id);

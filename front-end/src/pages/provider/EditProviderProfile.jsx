@@ -333,7 +333,7 @@ const EditProviderProfile = () => {
               value={formData.industry}
               onChange={(e) => setFormData({...formData, industry: e.target.value})}
             >
-              {industries.map((ind, index) => <option key={index} value={ind}>{ind}</option>)}
+              {INDUSTRIES.map((ind, index) => <option key={index} value={ind}>{ind}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

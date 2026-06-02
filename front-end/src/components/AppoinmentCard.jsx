@@ -3,11 +3,13 @@ import { FiTrash2 } from "react-icons/fi";
 import { isNew } from "./helpers";
 import { useNavigate } from "react-router-dom";
 
-export default function AppointmentCard({
-  appt,
-  onUpdate,
-  onDelete,
-}) {
+const statusStyles = {
+  confirmed: "bg-green-100 text-green-700",
+  pending: "bg-amber-100 text-amber-700",
+  cancelled: "bg-red-100 text-red-700",
+};
+
+export default function AppointmentCard({ appt, onUpdate, onDelete }) {
   const navigate = useNavigate();
 
   return (
@@ -16,28 +18,19 @@ export default function AppointmentCard({
       <div className="flex justify-between items-start mb-2">
         <div>
           <p className="font-bold">{appt.client?.name}</p>
-          <p className="text-sm text-slate-500">
-            {appt.service?.name}
-          </p>
+          <p className="text-sm text-slate-500">{appt.service?.name}</p>
         </div>
 
-        <span
-          className={`px-2 py-1 rounded text-xs font-bold ${
-            appt.status === "confirmed"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
+        <span className={`px-2 py-1 rounded text-xs font-bold ${statusStyles[appt.status] || "bg-slate-100 text-slate-700"}`}>
           {appt.status}
         </span>
       </div>
+
       <div className="flex justify-between items-start mb-2">
         {/* Date */}
         <div className="text-sm text-slate-600 mb-3">
           <p>{dayjs(appt.date).format("MMM D")}</p>
-          <p className="text-blue-600 font-medium">
-            {appt.startTime}
-          </p>
+          <p className="text-blue-600 font-medium">{appt.startTime}</p>
         </div>
 
         {/* New badge */}
@@ -61,17 +54,16 @@ export default function AppointmentCard({
         )}
 
         <button
-          onClick={() => navigate(`/booking/${appt.provider?._id || appt.provider}?reschedule=${appt._id}`)}
-          className="border px-3 py-1 rounded text-xs"
+          onClick={() => navigate(`/shared/booking/${appt.provider?._id || appt.provider}?reschedule=${appt._id}`)}
+          className="border px-3 py-1 rounded text-xs hover:bg-slate-50"
         >
           Reschedule
         </button>
 
-        {(appt.status === "confirmed" ||
-          appt.status === "cancelled") && (
+        {(appt.status === "confirmed" || appt.status === "cancelled") && (
           <button
             onClick={() => onDelete(appt._id)}
-            className="text-red-500 text-sm"
+            className="text-red-500 text-sm p-1 hover:bg-red-50 rounded"
           >
             <FiTrash2 />
           </button>
@@ -80,3 +72,4 @@ export default function AppointmentCard({
     </div>
   );
 }
+

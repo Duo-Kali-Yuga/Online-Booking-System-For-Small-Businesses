@@ -16,6 +16,7 @@ import Register from "./pages/Register";
 import ClientDiscovery from "./pages/client/ClientDiscovery";
 import ClientDashboard from "./pages/client/ClientDashboard";
 import BookingPage from "./pages/client/BookingPage";
+import BookingSharePage from "./pages/share/BookingPage"
 
 // Provider
 import SetupProviderProfile from "./pages/provider/SetupProviderProfile";

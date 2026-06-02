@@ -170,7 +170,7 @@ export async function getBotResponse(message, user) {
     if (role === "client") {
       return {
         text: "I'll take you to the booking page.",
-        action: "/client/dashboard",
+        action: "/app",
       };
     }
     return { text: "Only clients can book appointments." };
@@ -178,19 +178,17 @@ export async function getBotResponse(message, user) {
 
   // --- CANCEL ---
   if (msg.includes("cancel")) {
-    if (role === "client") {
-      return {
-        text: "I'll take you to the booking page.",
-        action: "/client/dashboard",
-      };
-    }
+    return {
+      text: "Go to your dashboard to cancel an appointment.",
+      // action: "/dashboard",
+    };
   }
 
   // --- RESCHEDULE ---
   if (msg.includes("reschedule")) {
     return {
       text: "You can reschedule from your dashboard.",
-      action: "/dashboard",
+      // action: "/dashboard",
     };
   }
 

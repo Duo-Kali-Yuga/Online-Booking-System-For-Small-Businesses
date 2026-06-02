@@ -9,6 +9,7 @@ import serviceRoutes from "./routes/serviceRoutes.js";
 import availabilityRoutes from "./routes/availabilityRoutes.js";
 import slotRoutes from "./routes/slotRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
 import { logger } from "./middlewares/logger.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
@@ -22,13 +23,16 @@ const app = express();
 
 
 const allowedOrigins = [
-  //"mongodb://localhost:27017/booking_system", // Local Version
-  'https://booking-businesses.vercel.app', // Internet 
+  //"mongodb://localhost:27017/booking_system",
+  //"http://localhost:27017", // Local frontend
+  //"http://localhost:5173", // Local frontend
+  //"http://localhost:3000", // Alternative local frontend
+  "https://booking-businesses.vercel.app", // Production frontend
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-
+    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
     if (allowedOrigins.indexOf(origin) === -1) {
@@ -53,6 +57,7 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/availability", availabilityRoutes);
 app.use("/api/slots", slotRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Appointment from "../models/Appointment.js";
-import { createAppointment } from "./appointmentService.js";
+import { createAppointment } from "./appointmentServices.js";
 import Provider from "../models/Provider.js";
 
 export const rescheduleAppointment = async (

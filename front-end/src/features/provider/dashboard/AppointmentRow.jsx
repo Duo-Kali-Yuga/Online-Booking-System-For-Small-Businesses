@@ -59,9 +59,11 @@ export default function AppointmentRow({
           )}
 
           <button
-            onClick={() => navigate(`/booking/${appt.provider}`)}
+            onClick={() => navigate(`/provider/booking/${appt._id}`)}
+            
             className="border px-3 py-1 rounded text-xs"
           >
+
             Reschedule
           </button>
 
@@ -133,7 +135,7 @@ export default function AppointmentRow({
           )}
 
           <button
-            onClick={() => navigate(`/booking/${appt.provider}`)}
+            onClick={() => navigate(`/provider/booking/${appt.provider?._id || appt.provider}`)}
             className="border px-3 py-1 rounded text-xs"
           >
             Reschedule

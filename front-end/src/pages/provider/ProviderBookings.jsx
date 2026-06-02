@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
 
 const ProviderBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [filter, setFilter] = useState('all'); // all, confirmed, cancelled
+  const navigate = useNavigate(); // 2. Initialize navigate hook
 
   useEffect(() => {
     fetchBookings();
@@ -13,7 +15,6 @@ const ProviderBookings = () => {
 
   const fetchBookings = async () => {
     try {
-      // Correct endpoint based on your routes file
       const res = await api.get('/appointments/provider-bookings'); 
       setBookings(res.data.data);
     } catch (err) {
@@ -24,7 +25,7 @@ const ProviderBookings = () => {
   const handleCancel = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) return;
     try {
-      await api.patch(`/api/appointments/${id}/cancel`);
+      await api.patch(`/appointments/${id}/cancel`);
       fetchBookings(); // Refresh list
     } catch (err) {
       alert("Cancellation failed");
@@ -87,7 +88,6 @@ const ProviderBookings = () => {
                     <div className="text-xs font-bold text-blue-600">{booking.startTime} - {booking.endTime}</div>
                   </td>
                   <td className="p-4 text-slate-600">
-                    {/* Accessing the populated businessName or service name */}
                     {booking.service?.name || "Standard Service"}
                   </td>
                   <td className="p-4">
@@ -99,14 +99,30 @@ const ProviderBookings = () => {
                     </span>
                   </td>
                   <td className="p-4 text-right">
-                    {booking.status === 'confirmed' && (
-                      <button 
-                        onClick={() => handleCancel(booking._id)}
-                        className="text-sm text-red-500 hover:underline font-medium"
-                      >
-                        Cancel
-                      </button>
-                    )}
+                    <div className="flex justify-end gap-3 items-center">
+                      {/* 3. Added Reschedule action button for Active/Confirmed bookings */}
+                      {booking.status === 'confirmed' && (
+                        <button
+                          onClick={() => {
+                            // Safely extract the provider object structure
+                            const providerId = booking.provider?._id || booking.provider;
+                            navigate(`/shared/booking/${providerId}?reschedule=${booking._id}`);
+                          }}
+                          className="text-sm text-indigo-600 hover:underline font-medium"
+                        >
+                          Reschedule
+                        </button>
+                      )}
+                      
+                      {booking.status === 'confirmed' && (
+                        <button 
+                          onClick={() => handleCancel(booking._id)}
+                          className="text-sm text-red-500 hover:underline font-medium"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </motion.tr>
               ))}

@@ -22,7 +22,15 @@ const SetupProviderProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/api/providers', formData);
+      await api.post('/providers', {
+        businessName: formData.businessName,
+        industry: formData.industry,
+        description: formData.description,
+        location: {
+          city: formData.location.city,
+          country: formData.location.country
+        }
+      });
       alert("Business profile created successfully!");
       navigate('/provider'); // Now they can go to the dashboard
     } catch (err) {
@@ -63,7 +71,6 @@ const SetupProviderProfile = () => {
               <option value="education">Education</option>
               <option value="consulting">Consulting</option>
               <option value="fitness">Fitness</option>
-              <option value="consulting">Consulting</option>
             </select>
           </div>
 
@@ -74,6 +81,16 @@ const SetupProviderProfile = () => {
               className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="e.g., Madrid"
               onChange={(e) => setFormData({...formData, location: {...formData.location, city: e.target.value}})}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-600 mb-1">Country</label>
+            <input
+              type="text" required
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g., Spain"
+              onChange={(e) => setFormData({...formData, location: {...formData.location, country: e.target.value}})}
             />
           </div>
 
