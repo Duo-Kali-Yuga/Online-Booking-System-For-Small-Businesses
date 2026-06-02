@@ -20,7 +20,7 @@ const app = express();
 
 // Allowed origins for CORS
 const allowedOrigins = [
-  "https://bookingbusinesses.vercel.app",     // Production frontend
+  "https://booking-businesses.vercel.app/",     // Production frontend
   "http://localhost:5173",                     // Local Vite dev server
   "http://localhost:3000",                     // Alternative local port
   "http://localhost:5000",                     // If frontend runs on 5000

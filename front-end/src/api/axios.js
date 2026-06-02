@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
   // Use your local backend port
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5002/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://bookingbusinesses.onrender.com',
 
   // Use your Internet backend port
   //baseURL: "https://bookingbusinesses.onrender.com/api",
