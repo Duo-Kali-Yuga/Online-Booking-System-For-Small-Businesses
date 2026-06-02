@@ -5,6 +5,7 @@ const api = axios.create({
   //baseURL: import.meta.env.VITE_API_URL || 'https://bookingbusinesses.onrender.com/api',
 
   // Use your Internet backend port
+    //baseURL: "http://localhost:5000/api",
     baseURL: "https://bookingbusinesses.onrender.com/api",
 });
 

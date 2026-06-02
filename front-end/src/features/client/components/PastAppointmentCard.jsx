@@ -10,16 +10,7 @@ const PastAppointmentCard = ({appt, isPast, handleOpenReview, handleCancel, prov
 
   const navigate = useNavigate()
 
-  // if(providerInfo) {
-  //   console.log("Dragon...:",providerInfo)
-  //   console.log("Dragon:", typeof(providerInfo.avatar))
 
-  //   let l = providerInfo.avatar
-
-  //   let o = l.includes("b")
-  //   console.log(o)
-
-  // }
 
   return (
     <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center mb-4">
@@ -74,7 +65,7 @@ const PastAppointmentCard = ({appt, isPast, handleOpenReview, handleCancel, prov
         {/* Action: Reschedule (Fixed Navigate Bug) */}
         {!isPast && (
           <button 
-            onClick={() => navigate(`/booking/${appt.provider?._id}?reschedule=${appt._id}`)}
+            onClick={() => navigate(`/client/booking/${appt.provider?._id}?reschedule=${appt._id}`)}
             className="text-xs text-blue-600 font-semibold hover:underline"
           >
             Reschedule

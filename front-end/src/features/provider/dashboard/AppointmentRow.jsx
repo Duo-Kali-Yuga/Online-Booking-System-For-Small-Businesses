@@ -58,14 +58,12 @@ export default function AppointmentRow({
             </button>
           )}
 
-          <button
-            onClick={() => navigate(`/provider/booking/${appt._id}`)}
-            
+          {/* <button
+            onClick={() => navigate(`/provider/booking/${appt.provider?._id}?reschedule=${appt._id}`)}
             className="border px-3 py-1 rounded text-xs"
           >
-
             Reschedule
-          </button>
+          </button> */}
 
           {(appt.status === "confirmed" ||
             appt.status === "cancelled") && (
@@ -134,12 +132,12 @@ export default function AppointmentRow({
             </button>
           )}
 
-          <button
-            onClick={() => navigate(`/provider/booking/${appt.provider?._id || appt.provider}`)}
+          {/* <button
+            onClick={() => navigate(`/provider/booking/${appt.provider?._id}?reschedule=${appt._id}`)}
             className="border px-3 py-1 rounded text-xs"
           >
             Reschedule
-          </button>
+          </button> */}
 
           {(appt.status === "confirmed" ||
             appt.status === "cancelled") && (

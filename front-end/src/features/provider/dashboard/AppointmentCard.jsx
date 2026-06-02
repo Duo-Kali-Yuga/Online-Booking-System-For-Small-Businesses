@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { FiTrash2 } from "react-icons/fi";
 import { isNew } from "./helpers";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext"
 
 export default function AppointmentCard({
   appt,
@@ -9,6 +10,7 @@ export default function AppointmentCard({
   onDelete,
 }) {
   const navigate = useNavigate();
+    const { user, logout } = useAuth();
 
   return (
     <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm design-bg">
@@ -51,7 +53,7 @@ export default function AppointmentCard({
 
       {/* Actions */}
       <div className="flex flex-wrap gap-2">
-        {appt.status === "pending" && (
+        {appt.status === "pending" && user.role === "provider" && (
           <button
             onClick={() => onUpdate(appt._id, "confirmed")}
             className="bg-green-600 text-white px-3 py-1 rounded text-xs"
@@ -60,12 +62,12 @@ export default function AppointmentCard({
           </button>
         )}
 
-        <button
-          onClick={() => navigate(`/booking/${appt.provider?._id || appt.provider}?reschedule=${appt._id}`)}
+        {/* <button
+          onClick={() => navigate(`/provider/booking/${appt.provider?._id}?reschedule=${appt._id}`)}
           className="border px-3 py-1 rounded text-xs"
         >
           Reschedule
-        </button>
+        </button> */}
 
         {(appt.status === "confirmed" ||
           appt.status === "cancelled") && (
