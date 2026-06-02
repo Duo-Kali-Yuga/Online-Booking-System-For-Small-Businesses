@@ -23,6 +23,7 @@ const app = express();
 
 
 const allowedOrigins = [
+  "https://booking-businesses.vercel.app",
   //"mongodb://localhost:27017/booking_system",
   //"http://localhost:27017", // Local frontend
   //"http://localhost:5173", // Local frontend
