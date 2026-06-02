@@ -1,6 +1,8 @@
 import HeroSection from '../features/marketing/components/HeroSection';
 import LandingNavbar from '../features/marketing/components/LandingNavbar';
 import FeaturesSection from '../features/marketing/components/FeaturesSection';
+import HowItWorksSection from '../features/marketing/components/HowItWorks';
+import MovingInfoStrip from "../components/ui/MovingInfo"
 
 
 
@@ -14,8 +16,13 @@ const Landing = () => {
       {/* Hero Section */}
       <HeroSection/>
 
+      <MovingInfoStrip/>
+
       {/* Feature Section */}
       <FeaturesSection/>
+
+      <HowItWorksSection/>
+
 
     </div>
   );

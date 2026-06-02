@@ -11,7 +11,7 @@ const DashboardStats = ({ bookings }) => {
 
   const stats = [
     { label: "Today's Appointments", value: todayBookings.length, color: "border-blue-500", bg: "bg-blue-50" },
-    { label: "Daily Utilization", value: `${utilization}%`, color: "border-green-500", bg: "bg-green-50" },
+    // { label: "Daily Utilization", value: `${utilization}%`, color: "border-green-500", bg: "bg-green-50" },
     { label: "Daily Requests Completed", value: bookings.filter(b => b.status === 'completed').length, color: "border-purple-500", bg: "bg-purple-50" }
   ];
 

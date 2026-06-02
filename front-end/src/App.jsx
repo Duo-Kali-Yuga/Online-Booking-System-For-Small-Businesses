@@ -107,6 +107,7 @@ function App() {
             <Route path="bookings" element={<ProviderBookings />} />
             <Route path="reviews" element={<ManageReviews />} />
             <Route path="setup-profile" element={<SetupProviderProfile />} />
+            <Route path="booking/:providerId" element={<BookingSharePage />} />
 
           </Route>
 

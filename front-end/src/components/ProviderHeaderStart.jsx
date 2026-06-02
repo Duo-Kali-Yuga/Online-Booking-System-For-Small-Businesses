@@ -5,24 +5,29 @@ import { API_BASE } from '../lib/public.constants';
 
 
 
-const ProviderHeaderStart = ({provider}) => {
+const ProviderHeaderStart = ({ provider }) => {
   if (!provider) return null;
 
   console.log(provider)
 
   const { ratingStats, businessName, avatar, user, description } = provider;
-  
+
 
 
   return (
     <div className="bg-white border-b border-slate-100 pb-8 pt-4 mb-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          
+
           {/* Avatar Section */}
           <div className="relative">
-            <img 
-              src={avatar ? `${API_BASE}${avatar}` : `https://ui-avatars.com/api/?name=${user.name}`}
+            <img
+              src={
+                provider.avatar 
+                  ? `http://localhost:5000${provider.avatar}` 
+                  : `https://ui-avatars.com/api/?name=${encodeURIComponent(provider.user.name)}&background=random`
+              } 
+              // src={avatar ? `${API_BASE}${avatar}` : `https://ui-avatars.com/api/?name=${user.name}`}
               alt={businessName}
               className="w-24 h-24 md:w-32 md:h-32 rounded-3xl object-cover shadow-lg border-4 border-white"
             />
@@ -34,7 +39,7 @@ const ProviderHeaderStart = ({provider}) => {
             <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-4">
               <div>
                 <h1 className="text-3xl font-black text-slate-900 mb-1">{businessName}</h1>
-                
+
                 <div className="flex items-center justify-center md:justify-start gap-2">
                   <div className="flex text-yellow-400">
                     {[1, 2, 3, 4, 5].map((star) => (
