@@ -64,7 +64,7 @@ Flow Summary
 	3.	Admin confirms → both receive notifications.
 	4.	Appointment happens
 
-	Vercel: booking-businesses.vercel.app
+	Vercel: bookingbusinesses.vercel.app
 	Render: https://bookingbusinesses.onrender.com
 
 
