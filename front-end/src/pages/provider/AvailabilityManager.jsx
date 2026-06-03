@@ -53,7 +53,6 @@ const AvailabilityManager = () => {
         ...formData,
       });
       await fetchSchedules();
-      alert("Schedule updated!");
     } catch {
       alert("Save failed");
     } finally {
@@ -232,7 +231,7 @@ const AvailabilityManager = () => {
                 ))}
 
                 {formData.breaks.length === 0 && (
-                  <p className="text-slate-400 text-center py-4 border border-dashed rounded-xl">
+                  <p className="text-black text-center py-4 border border-dashed rounded-xl">
                     No breaks added
                   </p>
                 )}
