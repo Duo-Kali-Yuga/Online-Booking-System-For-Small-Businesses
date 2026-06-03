@@ -10,7 +10,7 @@ export default function AppointmentCard({
   onDelete,
 }) {
   const navigate = useNavigate();
-    const { user, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm design-bg">
@@ -24,11 +24,10 @@ export default function AppointmentCard({
         </div>
 
         <span
-          className={`px-2 py-1 rounded text-xs font-bold ${
-            appt.status === "confirmed"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
+          className={`px-2 py-1 rounded text-xs font-bold ${appt.status === "confirmed"
+            ? "bg-green-100 text-green-700"
+            : "bg-red-100 text-red-700"
+            }`}
         >
           {appt.status}
         </span>
@@ -62,22 +61,32 @@ export default function AppointmentCard({
           </button>
         )}
 
-        {/* <button
-          onClick={() => navigate(`/provider/booking/${appt.provider?._id}?reschedule=${appt._id}`)}
-          className="border px-3 py-1 rounded text-xs"
-        >
-          Reschedule
-        </button> */}
+        {
+          (user.role === "client") ? (
+            <button
+              onClick={() => navigate(`/client/booking/${appt.provider?._id}?reschedule=${appt._id}`)}
+              className="border px-3 py-1 rounded text-xs"
+            >
+              Reschedule
+            </button>
+          ) : (null)
+        }
+        {
+          (user.role === "provider") ? (
+            (appt.status === "confirmed" ||
+              appt.status === "cancelled") && (
+              <button
+                onClick={() => onDelete(appt._id)}
+                className="text-red-500 text-sm"
+              >
+                <FiTrash2 />
+              </button>
+            )
+        ) : (null)
+        }
 
-        {(appt.status === "confirmed" ||
-          appt.status === "cancelled") && (
-          <button
-            onClick={() => onDelete(appt._id)}
-            className="text-red-500 text-sm"
-          >
-            <FiTrash2 />
-          </button>
-        )}
+
+
       </div>
     </div>
   );

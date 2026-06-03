@@ -7,7 +7,7 @@ import { FiUsers, FiBriefcase, FiCalendar, FiTrash2, FiPower, FiShield } from 'r
 
 
 export const StatCard = ({ title, value, icon: Icon, color }) => (
-  <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5">
+  <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5 ">
     <div className={`p-4 rounded-2xl ${color}`}><Icon size={24} /></div>
     <div>
       <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{title}</p>
@@ -89,7 +89,7 @@ export default function DashboardAdmin() {
             <button
               key={tab}
               onClick={() => setView(tab)}
-              className={`px-6 py-2 rounded-xl text-sm font-bold capitalize transition ${view === tab ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'
+              className={`px-6 py-2 rounded-xl text-sm font-bold capitalize transition cursor-pointer ${view === tab ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-50'
                 }`}
             >
               {tab}
@@ -113,8 +113,9 @@ export default function DashboardAdmin() {
               <tr>
                 <th className="px-8 py-5">Entity Name</th>
                 <th className="px-8 py-5">Sub-Details</th>
-                <th className="px-8 py-5">Status</th>
+                <th className="px-8 py-5">Avatar-Set</th>
                 <th className="px-8 py-5 text-right">Actions</th>
+                <th className="px-8 py-5 text-right">User ID</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -124,7 +125,7 @@ export default function DashboardAdmin() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     key={item._id}
-                    className="hover:bg-slate-50/50 transition-colors"
+                    className="hover:bg-slate-50/50 transition-colors "
                   >
                     <td className="px-8 py-5">
                       <p className="font-bold text-slate-800">{item.name || item.businessName || item.client?.name}</p>
@@ -134,26 +135,29 @@ export default function DashboardAdmin() {
                       {view === 'appointments' ? item.service?.name : (item.role || 'Provider')}
                     </td>
                     <td className="px-8 py-5">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${(item.active || item.status === 'confirmed') ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${(item.avatar) ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
                         }`}>
-                        {item.status || (item.active ? 'Active' : 'Disabled')}
+                        {(item.avatar ? 'Yes' : 'No')}
                       </span>
                     </td>
                     <td className="px-8 py-5 text-right space-x-2">
-                      {view === 'providers' && (
+                      {/* {view === 'providers' && (
                         <button
                           onClick={() => handleToggleStatus(item._id)}
                           className={`p-2 rounded-lg transition-colors ${item.active ? 'text-green-500 bg-green-50' : 'text-slate-400 bg-slate-100'}`}
                         >
                           <FiPower size={18} />
                         </button>
-                      )}
+                      )} */}
                       <button
                         onClick={() => handleDelete(item._id, item)} // Pass 'item' here
-                        className="p-2 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-slate-300 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                       >
                         <FiTrash2 size={18} />
                       </button>
+                    </td>
+                    <td className="px-8 py-5">
+                      <p className="text-xs text-slate-800">{item._id}</p>
                     </td>
                   </motion.tr>
                 ))}
