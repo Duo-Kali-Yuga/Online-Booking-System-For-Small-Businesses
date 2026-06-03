@@ -24,7 +24,7 @@ const ProviderHeaderStart = ({ provider }) => {
             <img
               src={
                 provider.avatar 
-                  ? `http://localhost:5000${provider.avatar}` 
+                  ? `${API_BASE}${provider.avatar}` 
                   : `https://ui-avatars.com/api/?name=${encodeURIComponent(provider.user.name)}&background=random`
               } 
               // src={avatar ? `${API_BASE}${avatar}` : `https://ui-avatars.com/api/?name=${user.name}`}

@@ -247,7 +247,8 @@ const BookingPage = () => {
         <div className="flex flex-col items-start w-full">
           <h1 className="text-2xl font-bold text-(--brand-primary-hover) pl-12 flex justify-evenly items-center w-full">
             <span className="text-lg font-bold text-(--brand-primary-hover) flex items-center gap-2">
-              Reviews ({provider.averageRating?.totalReviews || 0})
+              Reviews 
+              {/* ({provider.averageRating?.totalReviews || 0}) */}
             </span>
             <span className="text-yellow-400 font-bold text-lg">★ {provider.ratingStats?.averageRating || 0} </span>
           </h1>
